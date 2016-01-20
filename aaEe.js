@@ -1,6 +1,6 @@
 /**
  * aloengular EE
- * @return SERVICE $aa
+ * @return SERVICE $aaEe
  *
  * Usage
  * inject $aaEe Factory
