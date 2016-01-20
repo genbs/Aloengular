@@ -9,9 +9,9 @@
  * $aaEe(function(){}, )
  * $aaEe(function(){}, 'aloengular', true)
  *
- * @parameter Function callable
- * @parameter String/Ascii Code String(int) code | default aloengular.ee.KONAMI_CODE
- * @parameter Boolen convert | default false (true if code is string)
+ * @param Function callable
+ * @param String/Ascii Code String(int) code | default aloengular.ee.KONAMI_CODE
+ * @param Boolen convert | default false (true if code is string)
  *
  */
 (function(){
