@@ -1,8 +1,10 @@
 /**
  * Aloengular
- * created at 01-20-2016
- * author Gennaro Bosone <gennaro.bs@gmail.com>
+ * created at: 01-20-2016
+ * author: Gennaro Bosone <gennaro.bs@gmail.com>
  *
+ * version: 0.0.0
+ * update at: 01-20-2016
  */
 (function(){
 
@@ -10,9 +12,13 @@
 
 	angular
 		.module('aloengular',[
-			'aloengular.easing',
-			'aloengular.roundProgress',
+			'aloengular.element',
 			'aloengular.ee',
+			'aloengular.easing',
+			'aloengular.asyncImage',
+			'aloengular.roundProgress',
+			'aloengular.scroll',
+			'aloengular.scrollTo',
 		])
 	;
 

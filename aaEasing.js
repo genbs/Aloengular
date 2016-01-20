@@ -1,3 +1,7 @@
+/**
+ * Aloengular easing
+ * @return FACTORY $aaEasing
+ */
 (function(){
 
 	'use strict';

@@ -1,0 +1,25 @@
+{
+	"name": "aloengular",
+	"version": "0.0.0",
+	"homepage": "https://github.com/genbs/Aloengular",
+	"description": "Angular 1.* + AloePups (js+sass) framework",
+	"main": "aloengular.json",
+	"moduleType": [
+		"es6"
+	],
+	"keywords": [
+		"Angularjs",
+		"Aloepups"
+	],
+	"authors": [
+		"Gennaro Bosone <gennaro.bs@gmail.com>"
+	],
+	"license": "MIT",
+	"ignore": [
+		"**/.*",
+		"node_modules",
+		"bower_components",
+		"test",
+		"tests"
+	]
+}
