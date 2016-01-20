@@ -40,16 +40,14 @@
 
 		function bind(callable, code, convert)
 		{
-			var i, ncode = '';
+			var i, ncode;
 
-			code = typeof code === 'undefined' ? KONAMI_CODE : code;
+			ncode = code = typeof code === 'undefined' ? KONAMI_CODE : code;
 			convert = typeof convert === 'undefined' ? (typeof code === 'string' ? true : false) : false;
 
 			if(convert == true)
 				for(i in code)
 					ncode += (code.charCodeAt(i) - 32);
-			else
-				ncode = code;
 
 			stack.push({ code : ncode, callback : callable, keys : '' });
 		}
@@ -57,6 +55,7 @@
 		function onKeyDown(e)
 		{
 			var s;
+
 			for(s in stack){
 				s = stack[s];
 				s.keys += e.keyCode;
@@ -69,6 +68,7 @@
 					s.keys = '';
 				}
 			}
+
 			return;
 		}
 	}
