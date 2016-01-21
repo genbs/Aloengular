@@ -62,10 +62,9 @@
                     img.src = $scope.result;
 
                     if(a) $element[0].appendChild(img);
-
-                    $scope.loaded = true;
-                    $scope.inProg = false;
                 }
+                $scope.loaded = true;
+                $scope.inProg = false;
             });
         }
     }
@@ -115,9 +114,7 @@
                 xhr.onload = function(e) {
                     if(xhr.response){
                         var blob = new Blob([xhr.response]);
-                        $rootScope.$apply(function(){
-                            obj.$scope.result = window.URL.createObjectURL(blob);
-                        });
+                        obj.$scope.result = window.URL.createObjectURL(blob);
                         addPerc(obj, 100);
                     }
                 }
@@ -136,20 +133,24 @@
 
             function addPerc(obj, p)
             {
+
                 $rootScope.$apply(function(){
-                    obj.$scope.loadPerc = Math.ceil(p);
+                    obj.$scope.loadPerc = Math.floor(p);
                 });
 
-                var total = 0, onePercImg = 100 / objsLen;
+                var total = 0, loaded = [], onePercImg = 100 / objsLen;
 
-                for(i in objs)
-                    total += Math.ceil((onePercImg * objs[i].$scope.loadPerc) / 100);
+                for(i in objs){
+                    total += Math.floor(onePercImg * objs[i].$scope.loadPerc) / 100;
+                    if(objs[i].$scope.loaded)
+                        loaded.push(objs[i]);
+                }
 
                 if(total >= 100){
-                    d.notify(100);
+                    d.notify({ percentage : 100, loaded: loaded });
                     d.resolve();
                 } else
-                    d.notify(total);
+                    d.notify({ percentage : Math.round(total), loaded: loaded });
             }
 
         }

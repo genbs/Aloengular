@@ -38,7 +38,7 @@
 				aa-round-progress-easing="easeInOutStrong"
 			>
 				<div>
-					Total load: {{ load }} / {{ imgLen }}<br>
+					Total load: {{ load }} ({{ nloadPerc }} / {{ imgLen }})<br>
 					Load Percentage: {{ tloadPerc }}%
 				</div>
 			</aa-round-progress>
@@ -133,6 +133,7 @@
 						function($scope, $rootScope, $aaImg){
 							$scope.load = false;
 							$scope.tloadPerc = 0;
+							$scope.nloadPerc = 0;
 							$scope.imgLen = 0;
 
 							$rootScope.$watch('asyncImages', function(n){ $scope.imgLen = n.length; });
@@ -140,7 +141,8 @@
 							$aaImg().then(function(){
 								$scope.load = true;
 							}, function(){}, function(e){
-								$scope.tloadPerc = e;
+								$scope.tloadPerc = e.percentage;
+								$scope.nloadPerc = e.loaded.length;
 							});
 						}
 					])
