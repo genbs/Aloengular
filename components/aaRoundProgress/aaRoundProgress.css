@@ -1,0 +1,16 @@
+.aa-round-progress {
+  position: relative;
+  text-align: center;
+  display: inline-block; }
+  .aa-round-progress .aa-round-circle-container {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0; }
+    .aa-round-progress .aa-round-circle-container > div {
+      display: inline-block;
+      vertical-align: middle;
+      line-height: initial; }
+
+/*# sourceMappingURL=aaRoundProgress.css.map */

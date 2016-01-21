@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="app">
+	<head>
+		<meta charset="UTF-8">
+		<title>Aloengular | AsyncImages</title>
+		<style></style>
+		<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.8/angular.min.js"></script>
+		<script src="aaAsyncImages.js"></script>
+		<script src="../aaEasing/aaEasing.js"></script>
+		<script src="../aaRoundProgress/aaRoundProgress.js"></script>
+		<link rel="stylesheet" href="../aaRoundProgress/aaRoundProgress.css">
+		<style>
+			body { font-family: Arial; font-weight: 100; padding: 0 40px; }
+			h1 { margin: 40px 0; }
+			#loading{
+				position: absolute;
+				top: 5%; right: 5%;
+			}
+		</style>
+	</head>
+
+	<body ng-controller="MainController as MainCtrl">
+
+		<h1>Aloengular | AsyncImages</h1>
+
+		<div id="loading">
+			<aa-round-progress
+				aa-round-progress-max-value="100"
+				aa-round-progress-value="tloadPerc"
+				aa-round-progress-stroke-width="5"
+				aa-round-progress-color="#369"
+				aa-round-progress-back-color="#eee"
+				aa-round-progress-width="200"
+				aa-round-progress-height="200"
+				aa-round-progress-manual="true"
+				aa-round-progress-easing="easeInOutStrong"
+			>
+				<div>
+					Total load: {{ load }} / {{ imgLen }}<br>
+					Load Percentage: {{ tloadPerc }}%
+				</div>
+			</aa-round-progress>
+		</div>
+
+
+		<aa-img src="image1" width="200px" height="200px">
+			<div ng-hide="$parent.loaded" style="width: 200px; height: 200px;">
+				<aa-round-progress
+					aa-round-progress-max-value="100"
+					aa-round-progress-value="$parent.loadPerc"
+					aa-round-progress-manual="true"
+					aa-round-progress-stroke-width="5"
+					aa-round-progress-color="#ff0"
+					aa-round-progress-back-color="#eee"
+				></aa-round-progress>
+			</div>
+		</aa-img>
+
+		<aa-img src="image2" width="200px"></aa-img>
+
+		<div style="width: 100px; height: 100px; background-size: cover"
+				aa-img background="image">
+		</div>
+
+		<aa-img src="'universe3.jpg'" width="100px">
+			<b ng-hide="$parent.loaded">{{ $parent.loadPerc }}</b>
+		</aa-img>
+
+
+		<script>
+			(function(){
+				'use strict';
+
+				angular
+					.module('app', [
+						'aloengular.asyncImages',
+						'aloangular.roundProgress'
+					])
+					.controller('MainController', ['$scope', '$rootScope', '$aaImg',
+						function($scope, $rootScope, $aaImg){
+							$scope.load = false;
+							$scope.tloadPerc = 0;
+							$scope.imgLen = 0;
+							$scope.image = 'universe.jpg?r=' + Math.random();
+							$scope.image1 = 'universe1.jpg?r=' + Math.random();
+							$scope.image2 = 'universe2.jpg?r=' + Math.random();
+
+							$rootScope.$watch('asyncImages', function(n){ $scope.imgLen = n.length; });
+
+							$aaImg().then(function(){
+								$scope.load = true;
+							}, function(){}, function(e){
+								$scope.tloadPerc = e;
+							});
+						}
+					])
+				;
+
+			})();
+		</script>
+	</body>
+</html>

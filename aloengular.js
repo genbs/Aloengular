@@ -15,7 +15,7 @@
 			'aloengular.element',
 			'aloengular.ee',
 			'aloengular.easing',
-			'aloengular.asyncImage',
+			'aloengular.asyncImages',
 			'aloengular.roundProgress',
 			'aloengular.scroll',
 			'aloengular.scrollTo',

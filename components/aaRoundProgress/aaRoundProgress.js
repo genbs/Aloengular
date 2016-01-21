@@ -3,13 +3,16 @@
  * @return DIRECTIVE aaRoundProgress
  *
  * @param Int maxValue
- * @param Int value
+ * @param Int/Model value
  * @param Int strokeWidth
  * @param String easing
  * @param String backColor
  * @param String backColor
  * @param Int duration (millisecond)
  * @param Int delay (millisecond)
+ * @param Int width
+ * @param Int Height
+ * @param boolean manual // watch 'value' without call timeout draw
  *
  */
 (function(){
@@ -18,7 +21,7 @@
 
 	angular
 		.module('aloangular.roundProgress', [
-			'aloangular.easing'
+			'aloengular.easing'
 		])
 	 	.directive('aaRoundProgress', aaRoundProgressDirective)
  	;
@@ -50,7 +53,10 @@
 				'easing'   : '@aaRoundProgressEasing',
 				'backColor': '@aaRoundProgressBackColor',
 				'duration' : '=aaRoundProgressDuration',
-				'delay'    : '=aaRoundProgressDelay'
+				'delay'    : '=aaRoundProgressDelay',
+				'manual'   : '=aaRoundProgressManual',
+				'width'    : '=aaRoundProgressWidth',
+				'height'   : '=aaRoundProgressHeight'
 			},
 			template: '<div class="aa-round-progress"><div class="aa-round-circle-container"><div ng-transclude></div></div></div>'
 		};
@@ -61,6 +67,7 @@
 			var canvas, SETTINGS;
 			SETTINGS = angular.copy(DEFAULT_SETTINGS);
 
+			SETTINGS.maxValue  = attrs.aaRoundProgressMaxValue;
 			SETTINGS.stroke    = attrs.aaRoundProgressStrokeWidth || SETTINGS.stroke;
 			SETTINGS.color     = attrs.aaRoundProgressColor || SETTINGS.color;
 			SETTINGS.backColor = attrs.aaRoundProgressBackColor || SETTINGS.backColor;
@@ -74,13 +81,6 @@
 			if(attrs.aaRoundProgressMaxValue && (Number(attrs.aaRoundProgressMaxValue) < Number(attrs.aaRoundProgressValue)))
 				throw new Error('[aaRoundProgress:directive]: aaRoundProgressMaxValue non può essere minore di attrs.aaRoundProgressValue');
 
-			SETTINGS.value = attrs.aaRoundProgressValue;
-			SETTINGS.maxValue = attrs.aaRoundProgressMaxValue || SETTINGS.value;
-
-			//SETTINGS.valuePerc = SETTINGS.value * 100 / SETTINGS.maxValue;
-			//SETTINGS.valueAngle = (SETTINGS.endAngle - SETTINGS.startAngle) * SETTINGS.valuePerc / 100;
-			SETTINGS.valueAngle = (SETTINGS.endAngle - SETTINGS.startAngle) * (SETTINGS.value / SETTINGS.maxValue);
-
 			return {
 				pre: aaRoundProgressPreLink,
 				post: aaRoundProgressPostLink
@@ -90,17 +90,17 @@
 
 	 		function aaRoundProgressPreLink($scope, $element, $attrs)
 	 		{
-	 			SETTINGS.width = $element[0].offsetWidth;
-	 			SETTINGS.height = $element[0].offsetHeight;
+				SETTINGS.width = parseInt(attrs.aaRoundProgressWidth) || $element[0].parentNode.offsetWidth;
+	 			SETTINGS.height = parseInt(attrs.aaRoundProgressHeight) || $element[0].parentNode.offsetHeight;
 	 			SETTINGS.width2 = SETTINGS.width / 2;
 	 			SETTINGS.height2 = SETTINGS.height / 2;
 
-	 			////////////////////////////////////////
+	 			$element[0].style.lineHeight = SETTINGS.height + 'px';
+	 			$element[0].style.height = SETTINGS.height + 'px';
 
 	 			var c = document.createElement('canvas');
 	 			c.width = SETTINGS.width;
 	 			c.height = SETTINGS.height;
-
 				canvas = c.getContext('2d');
 	 			canvas.lineWidth = SETTINGS.stroke;
 
@@ -113,26 +113,42 @@
 	 		function aaRoundProgressPostLink($scope, $element, $attrs) {
 	 			SETTINGS.currentAngle = SETTINGS.startAngle;
 				$scope.currentValue = 0;
-	 			SETTINGS.currentTime = 0;
 
 	 			canvas.beginPath();
 				canvas.strokeStyle = SETTINGS.backColor;
 				canvas.arc(SETTINGS.width2, SETTINGS.height2, SETTINGS.width2 - SETTINGS.stroke, SETTINGS.startAngle, SETTINGS.endAngle, false);
 				canvas.stroke();
 
-	 			$timeout(function(){
-	 				SETTINGS.startTime = Date.now();
-	 				draw();
-	 			}, SETTINGS.delay);
+				if($scope.manual === true){
+					$scope.$watch('value', function(n,o){
+						if(!n) return;
+						SETTINGS.value = n;
+						SETTINGS.valueAngle = (SETTINGS.endAngle - SETTINGS.startAngle) * (SETTINGS.value / SETTINGS.maxValue);
+						draw();
+					});
+				} else {
+					SETTINGS.currentTime = 0;
+					SETTINGS.value = $scope.value;
+					SETTINGS.valueAngle = (SETTINGS.endAngle - SETTINGS.startAngle) * (SETTINGS.value / SETTINGS.maxValue);
+
+		 			$timeout(function(){
+		 				SETTINGS.startTime = Date.now();
+		 				draw();
+		 			}, SETTINGS.delay);
+				}
 
 	 			////////////////////////////////////////
 
 	 			function draw()
 				{
-	 				SETTINGS.currentTime = Date.now() - SETTINGS.startTime;
-
-					SETTINGS.currentAngle = SETTINGS.easing(SETTINGS.currentTime, SETTINGS.startAngle, SETTINGS.valueAngle, SETTINGS.duration);
-					$scope.currentValue = Math.round(SETTINGS.easing(SETTINGS.currentTime, 0, SETTINGS.value, SETTINGS.duration));
+	 				if($scope.manual != true){
+		 				SETTINGS.currentTime = Date.now() - SETTINGS.startTime;
+						SETTINGS.currentAngle = SETTINGS.easing(SETTINGS.currentTime, SETTINGS.startAngle, SETTINGS.valueAngle, SETTINGS.duration);
+						$scope.currentValue = Math.round(SETTINGS.easing(SETTINGS.currentTime, 0, SETTINGS.value, SETTINGS.duration));
+	 				} else {
+	 					$scope.currentValue = SETTINGS.value;
+	 					SETTINGS.currentAngle = SETTINGS.valueAngle + SETTINGS.startAngle;
+	 				}
 
 					canvas.clearRect(0, 0, SETTINGS.width, SETTINGS.width);
 
@@ -146,10 +162,10 @@
 					canvas.arc(SETTINGS.width2, SETTINGS.height2, SETTINGS.width2 - SETTINGS.stroke, SETTINGS.startAngle, SETTINGS.currentAngle, false);
 					canvas.stroke();
 
-					if(SETTINGS.currentTime < SETTINGS.duration)
+					if(SETTINGS.currentTime < SETTINGS.duration && $scope.manual != true)
 						$timeout(draw, SETTINGS.timeout);
-					else
-						console.log(Date.now() - SETTINGS.startTime);
+					//else
+						//console.log(Date.now() - SETTINGS.startTime);
 				}
 	 		}
 
