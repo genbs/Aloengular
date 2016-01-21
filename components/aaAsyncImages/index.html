@@ -5,17 +5,20 @@
 		<title>Aloengular | AsyncImages</title>
 		<style></style>
 		<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.8/angular.min.js"></script>
-		<script src="aaAsyncImages.js"></script>
+		<script src="aaAsyncImages.js?r=1"></script>
 		<script src="../aaEasing/aaEasing.js"></script>
-		<script src="../aaRoundProgress/aaRoundProgress.js"></script>
+		<script src="../aaRoundProgress/aaRoundProgress.js?r=1"></script>
 		<link rel="stylesheet" href="../aaRoundProgress/aaRoundProgress.css">
 		<style>
 			body { font-family: Arial; font-weight: 100; padding: 0 40px; }
 			h1 { margin: 40px 0; }
 			#loading{
-				position: absolute;
-				top: 5%; right: 5%;
+				position: fixed;
+				top: 15%; right: 15%;
 			}
+			.bg{ width: 400px; height: 300px; background-size: cover; background-position: center; }
+			p{ margin: 60px 0 10px; }
+			div{ margin: 10px 0; }
 		</style>
 	</head>
 
@@ -30,8 +33,7 @@
 				aa-round-progress-stroke-width="5"
 				aa-round-progress-color="#369"
 				aa-round-progress-back-color="#eee"
-				aa-round-progress-width="200"
-				aa-round-progress-height="200"
+				aa-round-progress-size="300"
 				aa-round-progress-manual="true"
 				aa-round-progress-easing="easeInOutStrong"
 			>
@@ -42,9 +44,34 @@
 			</aa-round-progress>
 		</div>
 
+		<!-- -->
+		<p>
+			Basic example
+		</p>
+		<code>
+		</code>
+		<div>
+			<aa-img src="'universe2'" width="200px"></aa-img>
+		</div>
 
-		<aa-img src="image1" width="200px" height="200px">
-			<div ng-hide="$parent.loaded" style="width: 200px; height: 200px;">
+		<!-- -->
+
+		<p>
+			Example with async background-image
+		</p>
+
+		<div class="bg"
+			aa-img background="'universe2.jpg'">
+		</div>
+
+		<!-- -->
+
+		<p>
+			Example with aaRoundProgress module
+		</p>
+
+		<aa-img src="'universe3.jpg'" width="200px" height="200px">
+			<div ng-hide="$parent.loaded">
 				<aa-round-progress
 					aa-round-progress-max-value="100"
 					aa-round-progress-value="$parent.loadPerc"
@@ -52,19 +79,45 @@
 					aa-round-progress-stroke-width="5"
 					aa-round-progress-color="#ff0"
 					aa-round-progress-back-color="#eee"
-				></aa-round-progress>
+					aa-round-progress-size="200"
+				>
+					<div>
+						{{ $parent.currentValue }} -
+						{{ $parent.$parent.$parent.loadPerc }}
+					</div>
+				</aa-round-progress>
 			</div>
 		</aa-img>
 
-		<aa-img src="image2" width="200px"></aa-img>
+		<!-- -->
 
-		<div style="width: 100px; height: 100px; background-size: cover"
-				aa-img background="image">
+		<p>
+			Example with dynamic add ad aaRoundProgress module
+		</p>
+
+		<button ng-click="circleLoading = !circleLoading;">Add/remove image</button>
+
+		<div style="width: 200px; height: 200px;">
+			<aa-img src="'universe3.jpg?r=asda'" width="200px" height="200px" ng-if="circleLoading">
+				<div ng-hide="$parent.loaded">
+					<aa-round-progress
+						aa-round-progress-max-value="100"
+						aa-round-progress-value="$parent.loadPerc"
+						aa-round-progress-manual="true"
+						aa-round-progress-stroke-width="5"
+						aa-round-progress-color="#ff0"
+						aa-round-progress-back-color="#eee"
+						aa-round-progress-size="200"
+					>
+						<div>
+							{{ $parent.currentValue }} -
+							{{ $parent.$parent.$parent.loadPerc }}
+						</div>
+					</aa-round-progress>
+				</div>
+			</aa-img>
 		</div>
-
-		<aa-img src="'universe3.jpg'" width="100px">
-			<b ng-hide="$parent.loaded">{{ $parent.loadPerc }}</b>
-		</aa-img>
+		<!-- -->
 
 
 		<script>
@@ -81,9 +134,6 @@
 							$scope.load = false;
 							$scope.tloadPerc = 0;
 							$scope.imgLen = 0;
-							$scope.image = 'universe2.jpg?r=' + Math.random();
-							$scope.image1 = 'universe3.jpg?r=' + Math.random();
-							$scope.image2 = 'universe2.jpg?r=' + Math.random();
 
 							$rootScope.$watch('asyncImages', function(n){ $scope.imgLen = n.length; });
 

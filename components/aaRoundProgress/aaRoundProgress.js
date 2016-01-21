@@ -6,12 +6,11 @@
  * @param Int/Model value
  * @param Int strokeWidth
  * @param String easing
- * @param String backColor
+ * @param String Color
  * @param String backColor
  * @param Int duration (millisecond)
  * @param Int delay (millisecond)
- * @param Int width
- * @param Int Height
+ * @param Int size
  * @param boolean manual // watch 'value' without call timeout draw
  *
  */
@@ -42,7 +41,6 @@
  		};
 
  		return {
-			compile     : aaRoundProgressCompile,
 			replace     : true,
 			transclude  : true,
 			scope: {
@@ -55,9 +53,9 @@
 				'duration' : '=aaRoundProgressDuration',
 				'delay'    : '=aaRoundProgressDelay',
 				'manual'   : '=aaRoundProgressManual',
-				'width'    : '=aaRoundProgressWidth',
-				'height'   : '=aaRoundProgressHeight'
+				'size'    : '=aaRoundProgressSize',
 			},
+			compile     : aaRoundProgressCompile,
 			template: '<div class="aa-round-progress"><div class="aa-round-circle-container"><div ng-transclude></div></div></div>'
 		};
 
@@ -67,13 +65,14 @@
 			var canvas, SETTINGS;
 			SETTINGS = angular.copy(DEFAULT_SETTINGS);
 
-			SETTINGS.maxValue  = attrs.aaRoundProgressMaxValue;
-			SETTINGS.stroke    = attrs.aaRoundProgressStrokeWidth || SETTINGS.stroke;
-			SETTINGS.color     = attrs.aaRoundProgressColor || SETTINGS.color;
-			SETTINGS.backColor = attrs.aaRoundProgressBackColor || SETTINGS.backColor;
-			SETTINGS.duration  = attrs.aaRoundProgressDuration || SETTINGS.duration;
-			SETTINGS.delay     = attrs.aaRoundProgressDelay || SETTINGS.delay;
-			SETTINGS.easing    = $aaEasing[attrs.aaRoundProgressEasing || SETTINGS.easing];
+			SETTINGS.maxValue     = attrs.aaRoundProgressMaxValue;
+			SETTINGS.stroke       = attrs.aaRoundProgressStrokeWidth || SETTINGS.stroke;
+			SETTINGS.color        = attrs.aaRoundProgressColor || SETTINGS.color;
+			SETTINGS.backColor    = attrs.aaRoundProgressBackColor || SETTINGS.backColor;
+			SETTINGS.duration     = attrs.aaRoundProgressDuration || SETTINGS.duration;
+			SETTINGS.delay        = attrs.aaRoundProgressDelay || SETTINGS.delay;
+			SETTINGS.easing       = $aaEasing[attrs.aaRoundProgressEasing || SETTINGS.easing];
+			SETTINGS.currentAngle = SETTINGS.startAngle;
 
 			if(!attrs.aaRoundProgressValue)
 				throw new Error('[aaRoundProgress:directive]: aaRoundProgressValue non può essere nullo');
@@ -90,8 +89,8 @@
 
 	 		function aaRoundProgressPreLink($scope, $element, $attrs)
 	 		{
-				SETTINGS.width = parseInt(attrs.aaRoundProgressWidth) || $element[0].parentNode.offsetWidth;
-	 			SETTINGS.height = parseInt(attrs.aaRoundProgressHeight) || $element[0].parentNode.offsetHeight;
+				SETTINGS.width = parseInt(attrs.aaRoundProgressSize) || $element[0].parentNode.offsetWidth;
+	 			SETTINGS.height = parseInt(attrs.aaRoundProgressSize) || $element[0].parentNode.offsetHeight;
 	 			SETTINGS.width2 = SETTINGS.width / 2;
 	 			SETTINGS.height2 = SETTINGS.height / 2;
 
@@ -111,45 +110,64 @@
 			////////////////////////////////////////
 
 	 		function aaRoundProgressPostLink($scope, $element, $attrs) {
-	 			SETTINGS.currentAngle = SETTINGS.startAngle;
-				$scope.currentValue = 0;
 
-	 			canvas.beginPath();
-				canvas.strokeStyle = SETTINGS.backColor;
-				canvas.arc(SETTINGS.width2, SETTINGS.height2, SETTINGS.width2 - SETTINGS.stroke, SETTINGS.startAngle, SETTINGS.endAngle, false);
-				canvas.stroke();
+				draw();
 
-				if($scope.manual === true){
+				if($scope.manual === true)
+				{
+
 					$scope.$watch('value', function(n,o){
-						if(!n) return;
-						SETTINGS.value = n;
-						SETTINGS.valueAngle = (SETTINGS.endAngle - SETTINGS.startAngle) * (SETTINGS.value / SETTINGS.maxValue);
-						draw();
+						if(n){
+							SETTINGS.value = n;
+							SETTINGS.valueAngle = (SETTINGS.endAngle - SETTINGS.startAngle) *
+												  (SETTINGS.value / SETTINGS.maxValue);
+							manualDraw();
+						}
 					});
+
 				} else {
-					SETTINGS.currentTime = 0;
+
 					SETTINGS.value = $scope.value;
-					SETTINGS.valueAngle = (SETTINGS.endAngle - SETTINGS.startAngle) * (SETTINGS.value / SETTINGS.maxValue);
+					SETTINGS.valueAngle = (SETTINGS.endAngle - SETTINGS.startAngle) *
+										  (SETTINGS.value / SETTINGS.maxValue);
 
 		 			$timeout(function(){
 		 				SETTINGS.startTime = Date.now();
-		 				draw();
+		 				autoDraw();
 		 			}, SETTINGS.delay);
+
 				}
 
 	 			////////////////////////////////////////
 
-	 			function draw()
+	 			function autoDraw()
 				{
-	 				if($scope.manual != true){
-		 				SETTINGS.currentTime = Date.now() - SETTINGS.startTime;
-						SETTINGS.currentAngle = SETTINGS.easing(SETTINGS.currentTime, SETTINGS.startAngle, SETTINGS.valueAngle, SETTINGS.duration);
-						$scope.currentValue = Math.round(SETTINGS.easing(SETTINGS.currentTime, 0, SETTINGS.value, SETTINGS.duration));
-	 				} else {
-	 					$scope.currentValue = SETTINGS.value;
-	 					SETTINGS.currentAngle = SETTINGS.valueAngle + SETTINGS.startAngle;
-	 				}
+	 				SETTINGS.currentTime = Date.now() - SETTINGS.startTime;
+					SETTINGS.currentAngle = SETTINGS.easing(SETTINGS.currentTime,
+															SETTINGS.startAngle,
+															SETTINGS.valueAngle,
+															SETTINGS.duration);
 
+					$scope.currentValue = Math.ceil(SETTINGS.easing(SETTINGS.currentTime,
+																	 0,
+																	 SETTINGS.value,
+																	 SETTINGS.duration));
+					draw();
+
+					if(SETTINGS.currentTime < SETTINGS.duration)
+						$timeout(draw, SETTINGS.timeout);
+					//console.log(Date.now() - SETTINGS.startTime); //Duration time
+				}
+
+				function manualDraw()
+				{
+ 					$scope.currentValue = SETTINGS.value;
+ 					SETTINGS.currentAngle = SETTINGS.valueAngle + SETTINGS.startAngle;
+					draw();
+				}
+
+				function draw()
+				{
 					canvas.clearRect(0, 0, SETTINGS.width, SETTINGS.width);
 
 					canvas.beginPath();
@@ -161,11 +179,6 @@
 					canvas.strokeStyle = SETTINGS.color;
 					canvas.arc(SETTINGS.width2, SETTINGS.height2, SETTINGS.width2 - SETTINGS.stroke, SETTINGS.startAngle, SETTINGS.currentAngle, false);
 					canvas.stroke();
-
-					if(SETTINGS.currentTime < SETTINGS.duration && $scope.manual != true)
-						$timeout(draw, SETTINGS.timeout);
-					//else
-						//console.log(Date.now() - SETTINGS.startTime);
 				}
 	 		}
 

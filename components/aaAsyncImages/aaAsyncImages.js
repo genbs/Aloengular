@@ -41,39 +41,30 @@
             $scope.inProg = false;
             $scope.loadPerc = 0;
 
-            if($scope.background)
-                $scope.src = $scope.background;
+            if($scope.background) $scope.src = $scope.background;
 
             $rootScope.asyncImages.push({ $scope: $scope, $element: $element, $attrs: $attrs });
 
             $scope.$watch('result', function(n, o){
-                if(n){
-                    if($scope.background){
-                        $element[0].style.backgroundImage = 'url(\'' + $scope.result + '\')';
-                        return;
-                    }
+                if(!n) return;
 
-                    var a, img, append = false;
-                    img = $element[0].getElementsByTagName('img');
+                if($scope.background){
+                    $element[0].style.backgroundImage = 'url(\'' + $scope.result + '\')';
+                } else {
+                    var attr, img = $element[0].getElementsByTagName('img'), a = !!img;
 
-                    if(img.length)
-                        img = img[0];
-                    else {
-                        img = new Image();
-                        append = true;
-                    }
+                    img = img.length ? img[0] : new Image();
 
-                    for(a in $attrs.$attr)
-                        if(a != 'src')
-                            img.setAttribute(a, $attrs[a]);
+                    for(attr in $attrs.$attr)
+                        if(attr != 'src' && attr != 'background')
+                            img.setAttribute(attr, $attrs[attr]);
 
-                        img.src = $scope.result;
+                    img.src = $scope.result;
 
-                        if(append)
-                            $element[0].appendChild(img);
+                    if(a) $element[0].appendChild(img);
 
-                        $scope.loaded = true;
-                        $scope.inProg = false;
+                    $scope.loaded = true;
+                    $scope.inProg = false;
                 }
             });
         }
@@ -83,7 +74,12 @@
 
     function aaImgFactory($rootScope, $q, $timeout)
     {
-        var s = this;
+        var _init = false;
+
+        $rootScope.$watch(function(){ return $rootScope.asyncImages.length; }, function(n){
+            if(n && _init)
+                init();
+        });
 
         return init;
 
@@ -92,6 +88,8 @@
         function init()
         {
             var d = $q.defer(), i, objs, objsLen;
+
+            _init = true;
 
             $timeout(function(){
                 objs = $rootScope.asyncImages;
@@ -139,12 +137,13 @@
             function addPerc(obj, p)
             {
                 $rootScope.$apply(function(){
-                    obj.$scope.loadPerc = Math.round(p);
+                    obj.$scope.loadPerc = Math.ceil(p);
                 });
+
                 var total = 0, onePercImg = 100 / objsLen;
 
                 for(i in objs)
-                    total += Math.round((onePercImg * objs[i].$scope.loadPerc) / 100);
+                    total += Math.ceil((onePercImg * objs[i].$scope.loadPerc) / 100);
 
                 if(total >= 100){
                     d.notify(100);
