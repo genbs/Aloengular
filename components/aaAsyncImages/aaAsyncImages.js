@@ -6,13 +6,13 @@
 
    'use strict';
 
-   angular
-   .module('aloengular.asyncImages', [])
-       .directive('aaImg', aaImgDirective)
-       .factory('$aaImg', aaImgFactory)
+    angular
+        .module('aloengular.asyncImages', [])
+        .directive('aaImg', aaImgDirective)
+        .factory('$aaImg', aaImgFactory)
    ;
 
-	////////////////////////////////////////
+    ////////////////////////////////////////
 
     function aaImgDirective($rootScope)
     {
