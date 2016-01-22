@@ -30,7 +30,31 @@
 		this.length = len;
 		return this;
 	}
-	aaElement.prototype
+	aaElement.prototype = {
+		map: function(callable){
+			var e, results = [];
+			for(e in this){
+				var result = callable.call(this[e]);
+				if(typeof result !== 'undefined')
+					results.push(result);
+			}
+			return results.length ? (results.length == 1 ? results[0] : results) : this;
+		},
+		offset: function(){
+			return this.map(function(e){
+				var el = e, offset = { top: 0, left: 0 };
+				do{
+					if(!isNaN(el.offsetTop)){
+						offset.top += el.offsetTop;
+						offset.left += el.offsetLeft;
+					}
+				}while(el = el.offsetParent);
+
+				return offset;
+			});
+
+		}
+	}
 
 
 })();

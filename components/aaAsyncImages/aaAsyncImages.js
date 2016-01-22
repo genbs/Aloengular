@@ -76,8 +76,7 @@
         var _init = false;
 
         $rootScope.$watch(function(){ return $rootScope.asyncImages.length; }, function(n){
-            if(n && _init)
-                init();
+            if(n && _init) init();
         });
 
         return init;
@@ -94,8 +93,7 @@
                 objs = $rootScope.asyncImages;
                 objsLen = objs.length;
 
-                for(i in objs)
-                    sendRequest(objs[i]);
+                for(i in objs) sendRequest(objs[i]);
             });
 
             return d.promise;
@@ -120,8 +118,7 @@
                 }
 
                 xhr.addEventListener('progress', function(e) {
-                    if(e.total != 0)
-                        addPerc(obj, (e.loaded / e.total) * 100);
+                    addPerc(obj, (e.loaded / (e.total || 0)) * 100);
                 });
 
                 xhr.send();
@@ -133,26 +130,24 @@
 
             function addPerc(obj, p)
             {
-
                 $rootScope.$apply(function(){
-                    obj.$scope.loadPerc = Math.floor(p);
+                    obj.$scope.loadPerc = round(p, 2);
                 });
 
                 var total = 0, loaded = [], onePercImg = 100 / objsLen;
 
                 for(i in objs){
-                    total += Math.floor(onePercImg * objs[i].$scope.loadPerc) / 100;
-                    if(objs[i].$scope.loaded)
-                        loaded.push(objs[i]);
+                    total += round((onePercImg * objs[i].$scope.loadPerc) / 100, 2);
+                    if(objs[i].$scope.loaded) loaded.push(objs[i]);
                 }
 
-                if(total >= 100){
-                    d.notify({ percentage : 100, loaded: loaded });
-                    d.resolve();
-                } else
-                    d.notify({ percentage : Math.round(total), loaded: loaded });
+                d.notify({ percentage : Math.round(total), loaded: loaded });
+                if(total >= 100 || loaded.length >= objsLen) d.resolve();
             }
 
+            function round(value, decimals) {
+                return Number(Math.round(value+'e'+decimals)+'e-'+decimals);
+            }
         }
     }
 
