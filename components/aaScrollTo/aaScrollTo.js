@@ -1,25 +1,29 @@
+/**
+ * Aloengular ScrollTo
+ * [Require Aloengular Easing]
+ */
 (function(){
 
 	'use strict';
 
 	angular
-		.module('aloengular.scrollTo', [])
+		.module('aloengular.scrollTo')
 		.factory('$aaScrollTo', aaScrollTo)
 	;
 
 
-	function aaScrollTo($window, $timeout){
+	function aaScrollTo($window, $timeout, $aaEasing){
 
 		var SETTINGS = {
 			duration: 1000,
-			timeout: 10,
+			fps: null,
 		};
 
 		return scroll;
 
   		////////////////////////////////////////
 
-  		function scroll(to, duration, timeout)
+  		function scroll(to, duration, easing, fps)
   		{
   			if(typeof to !== 'number'){
   			 	if(typeof to.offsetTop !== 'undefined')
@@ -28,25 +32,32 @@
   			 		throw new Error('[Aloengular@aaScrollTo] parametro \'to\' error. Expected Number or HTMLElement');
   			}
 
+            if(typeof easing === 'string')
+                easing = $aaEasing[easing];
+
   			duration = typeof duration !== 'undefined' ? duration : SETTINGS.duration;
-  			timeout = typeof timeout !== 'undefined' ? timeout : SETTINGS.timeout;
+  			fps = typeof timeout !== 'undefined' ? timeout : SETTINGS.timeout;
 
+            var timestamp = Date.now();
   			var start = $window.scrollY || $window.pageYOffset;
-			var iterations = duration / timeout;
-			var increment = (to - start) / iterations;
 
-			_scroll(start, increment, iterations, timeout);
-  		}
+            _scroll();
 
-  		function _scroll(current, increment, iterations, timeout)
-  		{
-			$window.scrollTo(0,  current);
-			if(iterations > 0)
-				$timeout(function(){
-					_scroll(current + increment, increment, --iterations, timeout);
-				}, timeout);
-		}
+            return;
+
+            function _scroll()
+      		{
+    			$window.scrollTo(0,  easing(timestamp, start, to, duration));
+    			if(Date.now() < timestamp + duration){
+                    if(fps !== null)
+                        $timeout(_scroll, 1000 / fps);
+                    else
+                        _scroll();
+                }
+            }
+        }
+
   	}
-  	aaScrollTo.$inject = ['$window', '$timeout'];
+  	aaScrollTo.$inject = ['$window', '$timeout', '$aaEasing'];
 
 })();

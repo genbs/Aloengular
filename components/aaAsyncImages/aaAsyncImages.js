@@ -19,15 +19,16 @@
         return {
             restrict: 'EA',
             transclude: true,
+            replace: true,
             scope: {
-                src : '=',
-                background: '='
+                src : '=?aaSrc',
+                background: '=?aaBackground'
             },
             link : aaImgLink,
             template: function(element, attrs){
-                if(typeof attrs.background === 'undefined')
-                    return '<div ng-transclude></div>';
-                return null;
+                if(typeof attrs.aaBackground !== 'undefined')
+                    return '<div class="aa-img-background" ng-transclude></div>';
+                return '<img class="aa-img"></img>';
             }
         }
 
@@ -51,23 +52,18 @@
                 if($scope.background){
                     $element[0].style.backgroundImage = 'url(\'' + $scope.result + '\')';
                 } else {
-                    var attr, img = $element[0].getElementsByTagName('img'), a = !!img;
+                    var attr, img;
 
-                    img = img.length ? img[0] : new Image();
-
-                    for(attr in $attrs.$attr)
-                        if(attr != 'src' && attr != 'background')
-                            img.setAttribute(attr, $attrs[attr]);
-
-                    img.src = $scope.result;
-
-                    if(a) $element[0].appendChild(img);
+                    img = $element[0];
+                    img.setAttribute('src', $scope.result);
                 }
+
                 $scope.loaded = true;
                 $scope.inProg = false;
             });
         }
     }
+    aaImgDirective.$inject = ['$rootScope'];
 
     ////////////////////////////////////////
 
@@ -75,7 +71,7 @@
     {
         var _init = false;
 
-        $rootScope.$watch(function(){ return $rootScope.asyncImages.length; }, function(n){
+        $rootScope.$watch(function(){ return $rootScope.asyncImages.lenght; }, function(n){
             if(n && _init) init();
         });
 
@@ -89,12 +85,13 @@
 
             _init = true;
 
+
             $timeout(function(){
                 objs = $rootScope.asyncImages;
                 objsLen = objs.length;
 
                 for(i in objs) sendRequest(objs[i]);
-            });
+            }, 33);
 
             return d.promise;
 
@@ -142,7 +139,11 @@
                 }
 
                 d.notify({ percentage : Math.round(total), loaded: loaded });
-                if(total >= 100 || loaded.length >= objsLen) d.resolve();
+
+                if(total >= 100 || loaded.length >= objsLen)
+                    d.resolve();
+
+
             }
 
             function round(value, decimals) {
@@ -150,7 +151,6 @@
             }
         }
     }
-
     aaImgFactory.$inject = ['$rootScope', '$q', '$timeout'];
 
 

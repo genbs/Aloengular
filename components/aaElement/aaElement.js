@@ -53,6 +53,19 @@
 				return offset;
 			});
 
+		},
+		offset: function(element){
+			var el = element.length ? element[0] : element;
+
+			var offset = { top: 0, left: 0 };
+			do{
+				if(!isNaN(el.offsetTop)){
+					offset.top += el.offsetTop;
+					offset.left += el.offsetLeft;
+				}
+			}while(el = el.offsetParent);
+
+			return offset;
 		}
 	}
 
