@@ -18,8 +18,7 @@
         return {
             restrict : 'A',
             scope : {
-                sizes : '=aaRSize',
-                delay : '=aaRSizeDelay'
+                sizes : '=aaRSize'
             },
             link : aaResponsiveSizeLink
         };

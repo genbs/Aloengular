@@ -46,21 +46,25 @@
 
             $rootScope.asyncImages.push({ $scope: $scope, $element: $element, $attrs: $attrs });
 
-            $scope.$watch('result', function(n, o){
+            $scope.$watch('result', watchResult);
+
+            return;
+
+            //////////////////////
+
+            function watchResult(n)
+            {
                 if(!n) return;
 
-                if($scope.background){
+                if($scope.background)
                     $element[0].style.backgroundImage = 'url(\'' + $scope.result + '\')';
-                } else {
-                    var attr, img;
-
-                    img = $element[0];
-                    img.setAttribute('src', $scope.result);
-                }
+                else
+                    $element[0].setAttribute('src', $scope.result);
 
                 $scope.loaded = true;
                 $scope.inProg = false;
-            });
+            }
+
         }
     }
     aaImgDirective.$inject = ['$rootScope'];
@@ -71,9 +75,9 @@
     {
         var _init = false;
 
-        $rootScope.$watch(function(){ return $rootScope.asyncImages.lenght; }, function(n){
+        $rootScope.$watch('asyncImages.length', function(n){
             if(n && _init) init();
-        });
+        }, true);
 
         return init;
 
@@ -85,7 +89,6 @@
 
             _init = true;
 
-
             $timeout(function(){
                 objs = $rootScope.asyncImages;
                 objsLen = objs.length;
@@ -93,12 +96,15 @@
                 for(i in objs) sendRequest(objs[i]);
             }, 33);
 
+
             return d.promise;
 
             ////////////////////////////////////////
 
-            function sendRequest(obj){
+            function sendRequest(obj)
+            {
                 if(obj.$scope.loaded == true || obj.$scope.inProg == true) return;
+
                 obj.$scope.inProg = true;
 
                 var xhr = (XMLHttpRequest ? new XMLHttpRequest() : new ActiveXObject('Microsoft.XMLHTTP'));
@@ -106,13 +112,13 @@
                 xhr.open('GET', obj.$scope.src, true);
                 xhr.responseType = 'arraybuffer';
 
-                xhr.onload = function(e) {
+                xhr.addEventListener('load', function(e){
                     if(xhr.response){
                         var blob = new Blob([xhr.response]);
                         obj.$scope.result = window.URL.createObjectURL(blob);
                         addPerc(obj, 100);
                     }
-                }
+                });
 
                 xhr.addEventListener('progress', function(e) {
                     addPerc(obj, (e.loaded / (e.total || 0)) * 100);
@@ -142,8 +148,6 @@
 
                 if(total >= 100 || loaded.length >= objsLen)
                     d.resolve();
-
-
             }
 
             function round(value, decimals) {

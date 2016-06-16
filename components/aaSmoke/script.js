@@ -14,7 +14,6 @@
 
     function AppConfig(aaSmokeProvider)
     {
-
         aaSmokeProvider.setImage(smokesImgs);
         aaSmokeProvider.setBounce(false);
         aaSmokeProvider.setMinSize(180);

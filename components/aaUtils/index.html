@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="app">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,minimum-scale=1,initial-scale=1">
+    <title>Document</title>
+    <link href='https://fonts.googleapis.com/css?family=Open+Sans' rel='stylesheet' type='text/css'>
+    <link href='https://fonts.googleapis.com/css?family=Lobster' rel='stylesheet' type='text/css'>
+    <link href='https://fonts.googleapis.com/css?family=Shadows+Into+Light' rel='stylesheet' type='text/css'>
+    <link href='https://fonts.googleapis.com/css?family=EB+Garamond' rel='stylesheet' type='text/css'>
+    <link href='https://fonts.googleapis.com/css?family=Bangers' rel='stylesheet' type='text/css'>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.9/angular.min.js"></script>
+    <style>
+        body{ margin: 0; }
+        /*
+        $fontbase = 16
+        $line-height-base = 26
+        */
+
+
+        h1, h2, h3, h4,h5{ line-height: 1.61803398875em; }
+        h1{ font-size: 2.625em; }
+        h2{ font-size: 1.625em; }
+        h3{ font-size: 1.25em; }
+        h4{ font-size: 1em; }
+        h5{ font-size: 0.8125em; }
+
+    </style>
+</head>
+<body ng-controller="MainCtrl">
+
+    <div style="margin: 0 auto;">
+
+        <h1 style="font-family: 'EB Garamond', serif;">Prova a rimpicciolire la larghezza!</h1>
+        <h2>H2 <small>- font-size: <span style="color: red">{{ x | number:2 }}px</span> | line-height: <span style="color: blue">{{ y | number:2}}px</span></small></h2>
+        <h3>Prova testo h3</h3>
+        <h4>Prova testo h4</h4>
+        <h5>Prova testo h5</h5>
+
+
+        <br><br>
+        <hr>
+        <div>
+
+            <h2 style="display: block; width: 100%; text-align:center">LEGGI QUI</h2>
+            <p>
+                Viene settato dinamicamente il testo, il line-height ed il contenitore in base a delle formule della sezione aurea.
+            </p>
+            <p>
+                la grandezza della font si può regolare in base alla larghezza della viewport.
+                Adesso ho impostato che con una view di 280px (ed inferiore) la font è 12px,
+                se invece la vp supera i 2550px la font è 28px. Nei valori di vp intermedi (come il mio schermo), la font è calcolata dinamicamente, così il lineHeight e la larghezza del contenitore del testo.
+                Nel caso in cui il contenitore calcolato dinamicamente è più grande della viewport (in questo caso si dovrebbe diminuire la font [cosa che è possibile, ma questa che ti descrivo è un'opzione che ho fatto]) la font prende un minimo di grandezza (che in questo caso è 12px) e il contenitore si espande per tutta la larghezza dello schermo.
+            </p>
+        </div>
+        <hr>
+        <br><br>
+        <br><br>
+
+        <div>
+            <b>Conteiner size: {{ w | number:2 }}px</b>
+            Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+            Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+            Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+            Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+        </div>
+
+        <br><br>
+        <br><br>
+
+        <h1 style="font-family: 'Open Sans', sans-serif;">
+            <div style="width: 100%; display:block; text-align:center">ESEMPIO OPEN SANS</div>
+            Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+        </h1>
+        <h2 style="font-family: 'Lobster', cursive;">
+            <div style="width: 100%; display:block; text-align:center">ESEMPIO LOBSTER</div>
+            Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+        </h2>
+        <h3 style="font-family: 'Shadows Into Light', cursive;">
+            <div style="width: 100%; display:block; text-align:center">ESEMPIO Shadows Into Light</div>
+            Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+        </h3>
+        <h4 style="font-family: 'EB Garamond', serif;">
+            <div style="width: 100%; display:block; text-align:center">ESEMPIO EB Garamond</div>
+            Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+        </h4>
+        <h5 style="font-family: 'Bangers', cursive;">
+            <div style="width: 100%; display:block; text-align:center">ESEMPIO Bangers</div>
+            Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+        </h5>
+    </div>
+
+    <script src="aaUtils.js"></script>
+    <script src="../aaAurea/aaAurea.js"></script>
+    <script>
+        angular
+            .module('app', ['aloengular.utils', 'aloengular.aurea'])
+            .controller('MainCtrl', ['$scope', '$element', '$aa', '$aaAurea', function($scope, $element, $aa, $aaAurea){
+                $scope.x = 0;
+                $scope.y = 0;
+                $scope.w = 0;
+
+                // Golden Ratio
+
+                window.onresize = setFont;
+
+                setFont();
+
+                function setFont(){
+                    var r = $aaAurea.getFont($aa.proportion(12, 28, window.innerWidth, 280, 2550));
+
+                    document.body.style.fontSize = r.fontSize + 'px';
+                    document.body.style.lineHeight = r.lineHeight + 'px';
+                    document.body.children[0].style.width = r.width < window.innerWidth ? r.width + 'px' : '100%';
+
+                    $scope.$applyAsync(function(){
+                        $scope.x = r.fontSize;
+                        $scope.y = r.lineHeight;
+                        $scope.w = r.width;
+                    });
+                };
+            }]);
+        ;
+    </script>
+</body>
+</html>
