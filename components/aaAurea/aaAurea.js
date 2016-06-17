@@ -36,13 +36,13 @@
 
         function getFont(fontSize, width, lineHeight)
         {
-            var h = Math.round(fontSize * PHI), w = Math.pow(h, 2);
+            var h = fontSize * PHI, w = Math.pow(h, 2);
 
             if(typeof width !== 'undefined'){
                 w = width;
                 fontSize = Math.sqrt(width) / PHI;
                 h = getLineHeightFromFontAndWidth(fontSize, width);
-                h = Math.round(h * fontSize);
+                h *= fontSize;
             } else {
                 if(typeof lineHeight !== 'undefined')
                     h = lineHeight;

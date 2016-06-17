@@ -1,0 +1,58 @@
+@import '../../../AloePups/aloepups_init.scss';
+
+$color: #359;
+$inputs: false;
+$aa-select: false;
+$colums: true;
+$navs: false;
+$sizings: true;
+$tables: false;
+$responsive_alignments: false;
+$responsive_columns: false;
+$responsive_sizings: false;
+$responsive_visibilities: false;
+
+$sizing-xs-2 : $gld1 * 2;
+
+$anim-easing: cubic-bezier(0.560, 0.245, 0.255, 1.000);
+
+
+/***************************
+            VENDORS
+***************************/
+
+
+/**************************/
+
+
+@import '../../../AloePups/aloepups_build.scss';
+
+
+/*****************************************
+                    APP
+*****************************************/
+
+h1{
+    color: $color-lighter;
+}
+h2{
+    color: $color-light;
+}
+h3{
+    color: $color;
+    font-weight:400;
+}
+h4{
+    color: $color-dark;
+    font-weight:400;
+}
+h5{
+    color: $color-darker;
+    font-weight:400;
+}
+
+.pd-l-xs-2{ padding-left: $sizing-xs-2; }
+.pd-r-xs-2{ padding-right: $sizing-xs-2; }
+
+
+
