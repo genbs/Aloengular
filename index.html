@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="aloengular" ng-strict-di>
+<head>
+    <meta charset="UTF-8">
+    <title>Document</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.1/angular.min.js"></script>
+    <style>
+        html, body{ height: 100%; }
+        body{
+            margin:0;
+        }
+    </style>
+</head>
+<body ng-controller="MainCtrl">
+
+    <div style="background:green" aa-r-size="[{ attr: 'height', element:'body'}, { attr:'width', size: 80 }, { attr: 'lineHeight', element:'window', elementAttr:'innerHeight' }]">asd</div>
+    <div style="background:red" aa-r-size="[{ attr: 'width', element: 'window', elementAttr:'innerWidth', size: 50 }, { attr: 'height', element:'body', size: 20 }]">ljklk</div>
+    <div style="background:blue; width: 100%; height: 100%; text-align:center" class="lineHeight-window-innerHeight-100">ciao</div>
+
+
+    <script src="components/aaUtils/aaUtils.js"></script>
+    <script src="components/aaMediaQuery/aaMediaQuery.js"></script>
+    <script src="components/aaResponsiveSize/aaResponsiveSize.js"></script>
+    <script src="components/aaAurea/aaAurea.js"></script>
+
+    <script>
+        angular
+            .module('aloengular',
+                ['aloengular.utils', 'aloengular.mediaQuery', 'aloengular.responsiveSize', 'aloengular.aurea'])
+            .controller('MainCtrl', MainCtrl)
+        ;
+
+        function MainCtrl($scope, $aa, $aaRSize, $aaAurea){
+
+            $aaRSize.add([{ elementName: 'window', element: window, elementAttr:'innerHeight', attr:'lineHeight', size: 100 }]);
+
+            window.onresize = setFont;
+
+            setFont();
+
+            return;
+
+            //////////////////////////////
+
+            function setFont(){
+                var f = $aaAurea.getFontSpecByFontSize($aa.proportion(18,24,window.innerWidth,360, 1440));
+                console.log(f);
+                document.body.style.fontSize = f.fontSize + 'px';
+                document.body.style.lineHeight = f.lineHeight + 'px';
+            }
+        }
+        MainCtrl.$inject = ['$scope', '$aa', '$aaRSize', '$aaAurea'];
+    </script>
+</body>
+</html>

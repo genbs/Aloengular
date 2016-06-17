@@ -20,6 +20,9 @@
 		aa.random = random;
 		aa.proportion = proportion;
 
+		aa.ucfirst = ucfirst;
+		aa.str_random = str_random;
+
 		return aa;
 	}
 
@@ -58,12 +61,13 @@
 			if(typeof result !== 'undefined')
 				results.push(result);
 		}
-		return results.length ? (results.length == 1 ? results[0] : results) : this;
+		return results.length ? (results.length == 1 ? results[0] : results) : null;
 	}
 
 	///////////////////////////
 
-	function offset(element){
+	function offset(element)
+	{
 		return this.map(element, function(e){
 			var el = e, offset = { top: 0, left: 0 };
 			do{
@@ -115,7 +119,8 @@
 
 	///////////////////////////
 
-	function proportion(min, max, refCurrent, refMin, refMax){
+	function proportion(min, max, refCurrent, refMin, refMax)
+	{
 		var perc, x;
 
 		if(typeof refMin === 'undefined' && typeof refMax === 'undefined')
@@ -128,7 +133,22 @@
 			perc = (refCurrent - refMin) / (refMax - refMin) * 100;
 
 		x = (perc * (max - min) / 100) + min;
+
 		return x < min ? min : (x > max ? max : x);
 	}
+
+	//////////////////////////////
+
+	function ucfirst(string)
+	{
+        return string.charAt(0).toUpperCase() + string.slice(1);
+    }
+
+    function str_random(length)
+    {
+    	return Math.random().toString(36).substr(2, (length || 5) + 2);
+    }
+
+    //////////////////////////////
 
 })();

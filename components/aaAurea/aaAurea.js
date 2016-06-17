@@ -29,11 +29,14 @@
         var gld1 = gld3 - gld2;
 
         return  {
-            getFont: getFont
+            getFontSpecByFontSize: getFontSpecByFontSize,
+            getFontSpecByWidth: getFontSpecByWidth
         }
 
         //////////////////
 
+        /*
+        */
         function getLineHeightFromFontAndWidth(fontSize, width)
         {
             return PHI - (1 / (2 * PHI)) * (1 - (width / (Math.pow(fontSize * PHI, 2))));
@@ -45,21 +48,31 @@
             return Math.pow(fontSize * PHI, 2) * (1 + 2 * PHI * ((h / fontSize) - PHI));
         }
 
-        function getFont(fontSize, width, lineHeight)
+        //////////////////////////////
+
+        function getFontSpecByWidth(width)
         {
-            var h = fontSize * PHI, w = Math.pow(h, 2);
+            var fontSize, h;
 
-            if(typeof width !== 'undefined'){
-                w = width;
-                fontSize = Math.sqrt(width) / PHI;
-                h = getLineHeightFromFontAndWidth(fontSize, width);
-                h *= fontSize;
-            } else {
-                if(typeof lineHeight !== 'undefined')
-                    h = lineHeight;
+            fontSize = Math.sqrt(width) / PHI;
+            //h = getLineHeightFromFontAndWidth(fontSize, width);
+            h = fontSize * PHI
 
-                w = getWidthFromFontAndLineHeight(fontSize, h);
-            }
+            return {
+                fontSize: fontSize,
+                lineHeight: h,
+                width: width
+            };
+        }
+
+        function getFontSpecByFontSize(fontSize)
+        {
+            var h, w;
+
+            //w = getWidthFromFontAndLineHeight(fontSize, fontSize * PHI);
+            //h = getLineHeightFromFontAndWidth(fontSize, w);
+            h = fontSize * PHI
+            w = Math.pow(h, 2);
 
             return {
                 fontSize: fontSize,

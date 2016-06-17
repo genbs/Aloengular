@@ -1,5 +1,6 @@
 /**
  * Aloengular Responsive Size
+ * @required [aloengular.utils]
  * sizes object = [
  *     { attr: string, element: object (optional), elementAttr: string (optional), size: number (optional, percentage), offset: (optiona, number), mediaQuery: string(aaMediaQuery)(optional) }
  * ]
@@ -10,10 +11,144 @@
 
     angular
         .module('aloengular.responsiveSize', [])
+        .factory('$aaRSize', aaResponsiveSizeFactory)
         .directive('aaRSize', aaResponsiveSize)
     ;
 
-    function aaResponsiveSize($window, $timeout, $aaMediaQuery)
+    //////////////////////////////
+
+    function aaResponsiveSizeFactory($rootScope, $aa)
+    {
+        var c = {},
+            o,
+            sizes = [],
+            DEBOUNCE = 50,
+            currentStyle,
+            $scope = $rootScope.$new();
+
+
+        c.add = add;
+        c.bindableClass = ['window', 'body'];
+        c.isBindable = isBindable;
+        c.getClassFromObj = getClassFromObj;
+
+        //////////////////////////////
+
+        window.addEventListener('resize', function(){ $scope.$digest(); });
+
+        $scope.$watchCollection(function(){
+            return $aa.map(sizes, function(s){ return s.element[s.elementAttr]; });
+        }, update, true);
+
+        //watch();
+
+        return c;
+
+        //////////////////////////////
+
+        function add(aaRSizeArray)
+        {
+            sizes = sizes.concat(aaRSizeArray);
+        }
+
+        function getValueFromObj(aaRSizeObj)
+        {
+            var x = aaRSizeObj.element[aaRSizeObj.elementAttr]
+                                ? aaRSizeObj.element[aaRSizeObj.elementAttr]
+                                : aaRSizeObj.element.style[aaRSizeObj.elementAttr];
+
+            return (x * aaRSizeObj.size / 100) + (aaRSizeObj.offset || 0) + 'px';
+        }
+
+        function getClassFromObj(aaRSizeObj)
+        {
+            return aaRSizeObj.attr + '-' + aaRSizeObj.elementName + '-' + aaRSizeObj.elementAttr + '-' + aaRSizeObj.size;
+        }
+
+        function isBindable(aaRSizeObj)
+        {
+            return c.bindableClass.indexOf(aaRSizeObj.elementName) >= 0;
+        }
+
+        function getAttrForCss(jsAttr)
+        {
+            switch(jsAttr){
+                case 'lineHeight':
+                    return 'line-height';
+            }
+
+            return jsAttr;
+        }
+
+        //////////////////////////////
+
+        /*
+        function watch()
+        {
+            var s = $aa.map(sizes, function(s){ return s.element[s.elementAttr]; });
+
+            if(sizes.length && !angular.equals(s,o))
+            {
+                update();
+                o = s;
+            }
+
+            $timeout(watch, DEBOUNCE);
+        }
+        */
+
+        function update()
+        {
+            var styles = [];
+
+            $aa.map(sizes, function(t){
+
+                if(!isBindable(t))
+                    t.target[0].style[t.attr] = getValueFromObj(t);
+                else {
+                    var x = '.' + getClassFromObj(t);
+                    if(styles.indexOf(x) == -1) styles[x] = getAttrForCss(t.attr) + ':' + getValueFromObj(t) + ';';
+                }
+            });
+
+            styles = $aa.map(styles,function(v,k){ return k+'{' + v + '}'; });
+            updateStyle(typeof styles === 'string' ? styles : styles.join(''));
+        }
+
+        //////////////////////////////
+
+        function appendStyle(fn)
+        {
+            var head = document.head || document.getElementsByTagName('head')[0];
+            var style = document.createElement('style');
+
+            style.type = 'text/css';
+            style.title = 'aa-r-size';
+
+            fn && fn.call(style);
+
+            head.appendChild(style);
+
+            return style;
+        }
+
+        function updateStyle(css)
+        {
+            if(currentStyle) currentStyle.remove();
+
+            currentStyle = appendStyle(function(){
+                if(this.styleSheet)
+                    this.styleSheet.cssText = css;
+                else
+                    this.appendChild(document.createTextNode(css));
+            });
+        }
+    }
+    aaResponsiveSizeFactory.$inject = ['$rootScope', '$aa'];
+
+    //////////////////////////////
+
+    function aaResponsiveSize($aaRSize, $aa)
     {
         return {
             restrict : 'A',
@@ -21,85 +156,111 @@
                 sizes : '=aaRSize'
             },
             link : aaResponsiveSizeLink
-        };
+        }
 
-        function aaResponsiveSizeLink($scope, $element, $attrs)
+        //////////////////////////////
+
+        function aaResponsiveSizeLink($scope, $element, $attrs, aaRSizeCtrl)
         {
-            var s, sizes, $w = angular.element($window);
+            var aaRSizeObj = aaRSizeSanitize($scope.sizes);
 
-            sizes = typeof $scope.sizes === 'string'
-                        ? $scope.sizes.split(',').map(function(e){
-                            var e = e.trim().split(' ');
-                            e[1] = e[1] ? e[1] : 100;
-                            return { attr: e[0], size: e[1] };
-                        })
-                        : !$scope.sizes.length ? [$scope.sizes] : $scope.sizes;
+            $aaRSize.add(aaRSizeObj);
 
-            for(s in sizes){
-                var t = sizes[s];
-                t.element = typeof t.element === 'string' ? getObjectByName(t.element, $element[0]) : t.element ? t.element : $element[0].parentNode;
-                t.elementAttr = t.elementAttr
-                                ? t.elementAttr
-                                : (t.attr == 'height' || t.attr == 'width' ? 'offset' + capitalizeFirstLetter(t.attr) : t.attr);
+            $aa.map(aaRSizeObj, function(obj){
+                if($aaRSize.isBindable(obj))
+                    $element.addClass($aaRSize.getClassFromObj(obj));
+            })
 
-                t.offset = t.offset ? t.offset : 0;
-                t._mediaQuery = t.mediaQuery;
-                t.mediaQuery = t.mediaQuery ? $aaMediaQuery[t.mediaQuery] : function(){ return true };
-
-                t.size = t.size ? t.size : 100;
-                sizes[s] = t;
-            }
-
-            $scope.$watch(function(){
-                var a = [];
-                for(s in sizes)
-                    a.push(sizes[s].element[sizes[s].elementAttr]);
-
-                return a;
-            }, setSizes, true);
+            $element[0].removeAttribute('aa-r-size');
 
             return;
 
-            function setSizes()
+            //////////////////////////////
+
+            function aaRSizeSanitize(sizes)
             {
-                for(s in sizes){
-                    var t = sizes[s];
-                    if(t.mediaQuery()){
-                        $element[0].style[t.attr] = ((((t.element.style && t.element.style[t.elementAttr]) ? t.element.style[t.elementAttr] : t.element[t.elementAttr]) * t.size / 100) + t.offset) + 'px';
+                var s, sizes;
+
+                if(typeof sizes === 'string')
+                    sizes = aaRSizeObjFromString(sizes);
+                else
+                    sizes = !sizes.length ? [sizes] : sizes;
+
+                for(s in sizes)
+                    sizes[s] = aaRSizeSanitizeObj(sizes[s]);
+
+                return sizes;
+
+                //////////////////////////////
+
+                function aaRSizeObjFromString(string)
+                {
+
+                    //String example 's:100 e:parent a:height ea:lineHeight, e:width,'
+
+                    var t, temp;
+
+                    return string.split(',').map(createObj);
+
+                    //////////////////////////////
+
+                    function createObj(string)
+                    {
+                        var r = {};
+
+                        $aa.map(string.trim().split(' '), function(e){
+                            e = e.trim().split(':');
+                            r[e[0]] = e[1];
+                        });
+
+                        return {
+                            attr        : r.a,
+                            size        : Number(r.s || 100),
+                            offset      : r.o || 0,
+                            element     : r.e,
+                            elementAttr : r.ea
+                        };
                     }
                 }
-            }
 
-            function getObjectByName(objName, obj)
-            {
-                switch(objName)
+                //////////////////////////////
+
+                function aaRSizeSanitizeObj(aaRSizeObj)
                 {
-                    case 'parent':
-                        return obj.parentNode;
-                    case 'window':
-                        return window;
-                    case 'body':
-                        return document.body;
-                    default:
-                        if(objName.indexOf('parent:') == 0){
-                            var p = objName.split(':');
-                            p[0] = obj;
-                            do{
-                                p[0] = p[0].parentNode;
-                                p[1]--;
-                            }while(p[1] != 0);
+                    aaRSizeObj.target = $element;
 
-                            return p[0];
-                        }
-                        return window;
+                    aaRSizeObj.elementName = typeof aaRSizeObj.element === 'string' ? aaRSizeObj.element : '';
+
+                    aaRSizeObj.element = typeof aaRSizeObj.element === 'string'
+                                        ? $aa.getObj(aaRSizeObj.element, $element[0])
+                                        : aaRSizeObj.element ? aaRSizeObj.element : $element[0].parentNode;
+
+                    if(aaRSizeObj.elementName === '')
+                    {
+                        if(aaRSizeObj.element == document.body)
+                            aaRSizeObj.elementName = 'body';
+                        else if(aaRSizeObj.element == document.window)
+                            aaRSizeObj.elementName = 'window';
+                    }
+
+                    aaRSizeObj.elementAttr = aaRSizeObj.elementAttr
+                                        ? aaRSizeObj.elementAttr
+                                        : (
+                                            aaRSizeObj.attr == 'height' || aaRSizeObj.attr == 'width'
+                                                ? 'offset' + $aa.ucfirst(aaRSizeObj.attr)
+                                                : aaRSizeObj.attr
+                                          );
+
+                    aaRSizeObj.offset = aaRSizeObj.offset ? aaRSizeObj.offset : 0;
+                    //aaRSizeObj._mediaQuery = aaRSizeObj.mediaQuery;
+                    //aaRSizeObj.mediaQuery = aaRSizeObj.mediaQuery ? $aaMediaQuery[aaRSizeObj.mediaQuery] : function(){ return true };
+                    aaRSizeObj.size = aaRSizeObj.size ? aaRSizeObj.size : 100;
+
+                    return aaRSizeObj;
                 }
-            }
-
-            function capitalizeFirstLetter(string) {
-                return string.charAt(0).toUpperCase() + string.slice(1);
             }
         }
     }
-    aaResponsiveSize.$inject = ['$window', '$timeout', '$aaMediaQuery'];
+    aaResponsiveSize.$inject = ['$aaRSize', '$aa'];
 
 })();
