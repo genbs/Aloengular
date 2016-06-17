@@ -8,14 +8,25 @@
 
     angular
         .module('aloengular.aurea', [])
-        .constant('PHI', 1.618033988749895) // 05 + Math.sqrt(1.25)
+        .constant('PHI', (Math.sqrt(1.25)) + 0.5)
         .factory('$aaAurea', aaAurea)
     ;
 
     ////////////////////////////////////////
 
-    function aaAurea(PHI, $window)
+    function aaAurea(PHI)
     {
+        var base = 100;
+        var gld10 = base / PHI;
+        var gld9 = base - gld10;
+        var gld8 = gld9 / PHI;
+        var gld7 = gld9 - gld8;
+        var gld6 = gld7 / PHI;
+        var gld5 = gld7 - gld6;
+        var gld4 = gld5 / PHI;
+        var gld3 = gld5 - gld4;
+        var gld2 = gld3 / PHI;
+        var gld1 = gld3 - gld2;
 
         return  {
             getFont: getFont
@@ -57,7 +68,7 @@
             };
         }
     }
-    aaAurea.$inject = ['PHI', '$window'];
+    aaAurea.$inject = ['PHI'];
 
 })();
 
