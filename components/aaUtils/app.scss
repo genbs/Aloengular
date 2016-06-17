@@ -1,25 +1,63 @@
 @import '../../../AloePups/aloepups_init.scss';
 
+/**
+ * Flags
+ */
+
 $color: #359;
 $inputs: false;
 $aa-select: false;
-$colums: true;
+$colums: false;
 $navs: false;
 $sizings: true;
 $tables: false;
+$flexbox: true;
 $responsive_alignments: false;
 $responsive_columns: false;
 $responsive_sizings: false;
 $responsive_visibilities: false;
 
-$sizing-xs-2 : $gld1 * 2;
+/***************************
+          VARIABILI
+***************************/
 
 $anim-easing: cubic-bezier(0.560, 0.245, 0.255, 1.000);
 
 
-/***************************
-            VENDORS
-***************************/
+$columns_sizes: (full: $base, large: $gld10, xlarge: $base - ($gld7 + $gld7), med: $gld9, small: $gld8, xsmall: $gld7);
+$flexbox_positions: (1: (one first), 2: (two second), 3: (three third)/*, 4: (four fourth), 5: (five fifth), 6: (six sixth)*/);
+
+$sizes : (
+    '-0'  : 0,
+    '-a'  : 'auto',
+    '-xs' : $sizing-xs,
+    '-s'  : $sizing-s,
+    '-m'  : $sizing-m,
+    '-l'  : $sizing-l,
+    //'-xl' : $sizing-xl
+);
+
+$sizing_positions : (
+    ''    : '',
+    '-t'  : '-top',
+    '-b'  : '-bottom',
+    '-l'  : '-left',
+    '-r'  : '-right',
+    '-tb' : '-top' '-bottom',
+    '-lr' : '-left' '-right'
+);
+
+$media_queries: (
+    'p': $phone,
+    't': $tablet,
+    'tp': $tablet-portrait,
+    'tl': $tablet-landscape,
+    'sd': $small-desktop,
+    'd': $desktop,
+    'ld': $large-desktop,
+    'mi': $mini,
+    'ma': $maxi
+);
 
 
 /**************************/
@@ -50,6 +88,8 @@ h5{
     color: $color-darker;
     font-weight:400;
 }
+
+$sizing-xs-2 : $gld1 * 2;
 
 .pd-l-xs-2{ padding-left: $sizing-xs-2; }
 .pd-r-xs-2{ padding-right: $sizing-xs-2; }
