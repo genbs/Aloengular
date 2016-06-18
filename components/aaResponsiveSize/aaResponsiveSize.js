@@ -102,7 +102,6 @@
             var styles = [];
 
             $aa.map(sizes, function(t){
-
                 if(!isBindable(t))
                     t.target[0].style[t.attr] = getValueFromObj(t);
                 else {

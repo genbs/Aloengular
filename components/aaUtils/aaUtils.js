@@ -14,12 +14,14 @@
 		var aa = {};
 
 		aa.toElement = toElement;
+
 		aa.map = map;
 		aa.offset = offset;
 		aa.getObj = getObjectByName;
-		aa.random = random;
+
 		aa.proportion = proportion;
 
+		aa.random = random;
 		aa.ucfirst = ucfirst;
 		aa.str_random = str_random;
 
@@ -112,23 +114,12 @@
 
 	///////////////////////////
 
-	function random(min, max)
-	{
-		return Math.random() * (max - min) + min;
-	}
-
-	///////////////////////////
-
 	function proportion(min, max, refCurrent, refMin, refMax)
 	{
 		var perc, x;
 
 		if(typeof refMin === 'undefined' && typeof refMax === 'undefined')
-		{
-			refMin = min;
-			refMax = max;
 			perc = refCurrent;
-		}
 		else
 			perc = (refCurrent - refMin) / (refMax - refMin) * 100;
 
@@ -138,6 +129,11 @@
 	}
 
 	//////////////////////////////
+
+	function random(min, max)
+	{
+		return Math.random() * (max - min) + min;
+	}
 
 	function ucfirst(string)
 	{
