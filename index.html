@@ -16,8 +16,17 @@
 </head>
 <body ng-controller="MainCtrl">
 
-    <div class="b1 pd-lr-l" aa-r-size="[{ attr: 'lineHeight', element:'body', elementAttr:'offsetHeight', size: 100}]">
-        asd 22222
+    <div class="b1 t-c" aa-r-size="[{ attr: ['height', 'lineHeight'], element:'body', size: 100}]">
+        <div class="d-ib va-m w-100">
+            <h1 class="mg-0">Ciao</h1>
+            <h2 class="mg-0">hello</h2>
+            <h3 class="mg-0">hi</h3>
+
+            <p style="margin: 0 auto;" class="d-b mg-0 lh-in" id="tc">
+                Lorem ipsum dolor sit amet, consectetur adipisicing elit. Inventore, est excepturi obcaecati commodi, quos harum fugit delectus consectetur, facilis explicabo debitis eaque culpa dolore id. Atque deleniti ducimus magnam ea!
+            </p>
+        </div>
+
     </div>
 
     <script src="components/aaUtils/aaUtils.js"></script>
@@ -34,6 +43,8 @@
 
         function MainCtrl($scope, $aa, $aaAurea){
 
+            var tc = document.getElementById('tc');
+
             window.addEventListener('resize', setFont);
 
             setFont();
@@ -43,9 +54,17 @@
             //////////////////////////////
 
             function setFont(){
-                var f = $aaAurea.getFontSpecByFontSize($aa.proportion(18,24,window.innerWidth,360, 1440));
+                var f = $aaAurea.getFontSpecByFontSize($aa.proportion(12, 22, window.innerWidth, 320, 1440));
+
+                if(f.width > window.innerWidth){
+                    console.log(f);
+                    f = $aaAurea.getFontSpecByWidth(window.innerWidth);
+                    console.log(f);
+                }
+
                 document.body.style.fontSize = f.fontSize + 'px';
                 document.body.style.lineHeight = f.lineHeight + 'px';
+                tc.style.width = f.width + 'px';
             }
         }
         MainCtrl.$inject = ['$scope', '$aa', '$aaAurea'];
