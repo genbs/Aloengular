@@ -17,30 +17,17 @@
 
     //////////////////////////////
 
-    function aaResponsiveSizeFactory($rootScope, $aa)
+    function aaResponsiveSizeFactory($aa)
     {
-        var c = {},
-            o,
-            sizes = [],
-            DEBOUNCE = 50,
-            currentStyle,
-            $scope = $rootScope.$new();
-
+        var c = {}, sizes = [];
 
         c.add = add;
-        c.bindableClass = ['window', 'body'];
-        c.isBindable = isBindable;
-        c.getClassFromObj = getClassFromObj;
 
-        //////////////////////////////
+        window.addEventListener('resize', function(){
+            requestAnimationFrame(update);
+        });
 
-        window.addEventListener('resize', function(){ $scope.$digest(); });
-
-        $scope.$watchCollection(function(){
-            return $aa.map(sizes, function(s){ return s.element[s.elementAttr]; });
-        }, update, true);
-
-        //watch();
+        requestAnimationFrame(update);
 
         return c;
 
@@ -60,92 +47,25 @@
             return (x * aaRSizeObj.size / 100) + (aaRSizeObj.offset || 0) + 'px';
         }
 
-        function getClassFromObj(aaRSizeObj)
-        {
-            return aaRSizeObj.attr + '-' + aaRSizeObj.elementName + '-' + aaRSizeObj.elementAttr + '-' + aaRSizeObj.size;
-        }
-
-        function isBindable(aaRSizeObj)
-        {
-            return c.bindableClass.indexOf(aaRSizeObj.elementName) >= 0;
-        }
-
-        function getAttrForCss(jsAttr)
-        {
-            switch(jsAttr){
-                case 'lineHeight':
-                    return 'line-height';
-            }
-
-            return jsAttr;
-        }
-
         //////////////////////////////
-
-        /*
-        function watch()
-        {
-            var s = $aa.map(sizes, function(s){ return s.element[s.elementAttr]; });
-
-            if(sizes.length && !angular.equals(s,o))
-            {
-                update();
-                o = s;
-            }
-
-            $timeout(watch, DEBOUNCE);
-        }
-        */
 
         function update()
         {
             var styles = [];
 
-            $aa.map(sizes, function(t){
-                if(!isBindable(t))
-                    t.target[0].style[t.attr] = getValueFromObj(t);
-                else {
-                    var x = '.' + getClassFromObj(t);
-                    if(styles.indexOf(x) == -1) styles[x] = getAttrForCss(t.attr) + ':' + getValueFromObj(t) + ';';
-                }
-            });
-
-            styles = $aa.map(styles,function(v,k){ return k+'{' + v + '}'; });
-            updateStyle(typeof styles === 'string' ? styles : styles.join(''));
-        }
-
-        //////////////////////////////
-
-        function appendStyle(fn)
-        {
-            var head = document.head || document.getElementsByTagName('head')[0];
-            var style = document.createElement('style');
-
-            style.type = 'text/css';
-            style.title = 'aa-r-size';
-
-            fn && fn.call(style);
-
-            head.appendChild(style);
-
-            return style;
-        }
-
-        function updateStyle(css)
-        {
-            if(currentStyle) currentStyle.remove();
-
-            currentStyle = appendStyle(function(){
-                if(this.styleSheet)
-                    this.styleSheet.cssText = css;
-                else
-                    this.appendChild(document.createTextNode(css));
+            sizes.map(function(t){
+                t.target[0].style[t.attr] = getValueFromObj(t);
             });
         }
+
     }
-    aaResponsiveSizeFactory.$inject = ['$rootScope', '$aa'];
+    aaResponsiveSizeFactory.$inject = ['$aa'];
+
+
 
     //////////////////////////////
+
+
 
     function aaResponsiveSize($aaRSize, $aa)
     {
@@ -161,14 +81,7 @@
 
         function aaResponsiveSizeLink($scope, $element, $attrs, aaRSizeCtrl)
         {
-            var aaRSizeObj = aaRSizeSanitize($scope.sizes);
-
-            $aaRSize.add(aaRSizeObj);
-
-            $aa.map(aaRSizeObj, function(obj){
-                if($aaRSize.isBindable(obj))
-                    $element.addClass($aaRSize.getClassFromObj(obj));
-            })
+            $aaRSize.add(aaRSizeSanitize($scope.sizes));
 
             $element[0].removeAttribute('aa-r-size');
 
@@ -207,7 +120,7 @@
                     {
                         var r = {};
 
-                        $aa.map(string.trim().split(' '), function(e){
+                        string.trim().split(' ').map(function(e){
                             e = e.trim().split(':');
                             r[e[0]] = e[1];
                         });

@@ -55,6 +55,16 @@
 
 	function map(element, callable)
 	{
+		var results = [], k;
+
+		element = this.toElement(element, true);
+
+		for(k in element)
+			results.push(callable.call(null, element[k], k));
+
+		return results.length ? (results.length == 1 ? results[0] : results) : null;
+
+		/*
 		element = this.toElement(element, true);
 
 		var e, results = [];
@@ -64,6 +74,7 @@
 				results.push(result);
 		}
 		return results.length ? (results.length == 1 ? results[0] : results) : null;
+		*/
 	}
 
 	///////////////////////////
