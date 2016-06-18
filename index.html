@@ -12,11 +12,13 @@
         .b1{ background:green; }
         .b2{ background:red; }
     </style>
+    <link rel="stylesheet" href="../AloePups/aloepups_example.css">
 </head>
 <body ng-controller="MainCtrl">
 
-    <div class="b1" aa-r-size="[{ attr: ['height', 'lineHeight'], element:'body', size: 50}, { attr:'padding', element:'body', elementAttr:'offsetHeight', size: 5 }]">asd 22222</div>
-
+    <div class="b1 pd-lr-l" aa-r-size="[{ attr: 'lineHeight', element:'body', elementAttr:'offsetHeight', size: 100}]">
+        asd 22222
+    </div>
 
     <script src="components/aaUtils/aaUtils.js"></script>
     <script src="components/aaMediaQuery/aaMediaQuery.js"></script>
@@ -30,9 +32,7 @@
             .controller('MainCtrl', MainCtrl)
         ;
 
-        function MainCtrl($scope, $aa,/* $aaRSize,*/ $aaAurea){
-
-            //$aaRSize.add([{ elementName: 'window', element: window, elementAttr:'innerHeight', attr:'lineHeight', size: 100 }]);
+        function MainCtrl($scope, $aa, $aaAurea){
 
             window.addEventListener('resize', setFont);
 
@@ -48,7 +48,7 @@
                 document.body.style.lineHeight = f.lineHeight + 'px';
             }
         }
-        MainCtrl.$inject = ['$scope', '$aa', /* '$aaRSize',*/ '$aaAurea'];
+        MainCtrl.$inject = ['$scope', '$aa', '$aaAurea'];
     </script>
 </body>
 </html>
