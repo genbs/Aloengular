@@ -2,9 +2,9 @@
  * Aloengular media query test
  * @return FACTORY $aaMediaQuery
  */
-(function(){
+ (function(){
 
-  'use strict';
+    'use strict';
 
     angular
         .module('aloengular.mediaQuery', [])

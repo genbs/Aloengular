@@ -3,8 +3,8 @@
 	'use strict';
 
 	angular
-	.module('aloengular.utils', [])
-	.factory('$aa', aaUtils)
+		.module('aloengular.utils', [])
+		.factory('$aa', aaUtils)
 	;
 
 	///////////////////////////

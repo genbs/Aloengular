@@ -10,9 +10,9 @@
     'use strict';
 
     angular
-    .module('aloengular.responsiveSize', [])
-    .factory('$aaRSize', aaResponsiveSizeFactory)
-    .directive('aaRSize', aaResponsiveSize)
+        .module('aloengular.responsiveSize', [])
+        .factory('$aaRSize', aaResponsiveSizeFactory)
+        .directive('aaRSize', aaResponsiveSize)
     ;
 
     //////////////////////////////

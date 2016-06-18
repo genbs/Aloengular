@@ -2,15 +2,15 @@
  * Aloengular Async Image
  * @return DIRECTIVE aaImg, SERVICE $aaImg
  */
- (function(){
+(function(){
 
-     'use strict';
+    'use strict';
 
-     angular
-     .module('aloengular.asyncImages', [])
-     .directive('aaImg', aaImgDirective)
-     .factory('$aaImg', aaImgFactory)
-     ;
+    angular
+        .module('aloengular.asyncImages', [])
+        .directive('aaImg', aaImgDirective)
+        .factory('$aaImg', aaImgFactory)
+    ;
 
     ////////////////////////////////////////
 
@@ -156,7 +156,6 @@
         }
     }
     aaImgFactory.$inject = ['$rootScope', '$q', '$timeout'];
-
 
 })();
 
