@@ -4,13 +4,13 @@
  */
  (function(){
 
-   'use strict';
+     'use strict';
 
-    angular
-        .module('aloengular.asyncImages', [])
-        .directive('aaImg', aaImgDirective)
-        .factory('$aaImg', aaImgFactory)
-   ;
+     angular
+     .module('aloengular.asyncImages', [])
+     .directive('aaImg', aaImgDirective)
+     .factory('$aaImg', aaImgFactory)
+     ;
 
     ////////////////////////////////////////
 
@@ -34,21 +34,21 @@
 
        ////////////////////////////////////////
 
-        function aaImgLink($scope, $element, $attrs)
-        {
-            if(!$rootScope.asyncImages) $rootScope.asyncImages = [];
+       function aaImgLink($scope, $element, $attrs)
+       {
+        if(!$rootScope.asyncImages) $rootScope.asyncImages = [];
 
-            $scope.loaded = false;
-            $scope.inProg = false;
-            $scope.loadPerc = 0;
+        $scope.loaded = false;
+        $scope.inProg = false;
+        $scope.loadPerc = 0;
 
-            if($scope.background) $scope.src = $scope.background;
+        if($scope.background) $scope.src = $scope.background;
 
-            $rootScope.asyncImages.push({ $scope: $scope, $element: $element, $attrs: $attrs });
+        $rootScope.asyncImages.push({ $scope: $scope, $element: $element, $attrs: $attrs });
 
-            $scope.$watch('result', watchResult);
+        $scope.$watch('result', watchResult);
 
-            return;
+        return;
 
             //////////////////////
 
@@ -76,7 +76,7 @@
         var _init = false;
 
         $rootScope.$watch('asyncImages.length', function(n){
-            if(n && _init) init();
+            n && _init && init();
         }, true);
 
         return init;

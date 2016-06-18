@@ -5,14 +5,14 @@
  *     { attr: string, element: object (optional), elementAttr: string (optional), size: number (optional, percentage), offset: (optiona, number), mediaQuery: string(aaMediaQuery)(optional) }
  * ]
  */
-(function(){
+ (function(){
 
     'use strict';
 
     angular
-        .module('aloengular.responsiveSize', [])
-        .factory('$aaRSize', aaResponsiveSizeFactory)
-        .directive('aaRSize', aaResponsiveSize)
+    .module('aloengular.responsiveSize', [])
+    .factory('$aaRSize', aaResponsiveSizeFactory)
+    .directive('aaRSize', aaResponsiveSize)
     ;
 
     //////////////////////////////
@@ -25,11 +25,9 @@
 
         raf = window.requestAnimationFrame || window.mozRequestAnimationFrame || window.webkitRequestAnimationFrame || window.msRequestAnimationFrame;
 
-        window.addEventListener('resize', function(){
-            raf(update);
-        });
+        window.addEventListener('resize', update);
 
-        raf(update);
+        update();
 
         return c;
 
@@ -43,8 +41,8 @@
         function getValueFromObj(aaRSizeObj)
         {
             var x = aaRSizeObj.element[aaRSizeObj.elementAttr]
-                                ? aaRSizeObj.element[aaRSizeObj.elementAttr]
-                                : aaRSizeObj.element.style[aaRSizeObj.elementAttr];
+                    ? aaRSizeObj.element[aaRSizeObj.elementAttr]
+                    : aaRSizeObj.element.style[aaRSizeObj.elementAttr];
 
             return (x * aaRSizeObj.size / 100) + (aaRSizeObj.offset || 0) + 'px';
         }
@@ -53,9 +51,11 @@
 
         function update()
         {
-            sizes.map(function(aaRSize){
-                aaRSize.attr.map(function(attr){
-                    aaRSize.target.style[attr] = getValueFromObj(aaRSize);
+            raf(function(){
+                sizes.map(function(aaRSize){
+                    aaRSize.attr.map(function(attr){
+                        aaRSize.target.style[attr] = getValueFromObj(aaRSize);
+                    });
                 });
             });
         }
@@ -150,12 +150,12 @@
                                         : aaRSizeObj.element ? aaRSizeObj.element : $element[0].parentNode;
 
                     aaRSizeObj.elementAttr = aaRSizeObj.elementAttr
-                                        ? aaRSizeObj.elementAttr
-                                        : (
-                                            aaRSizeObj.attr[0] == 'height' || aaRSizeObj.attr[0] == 'width'
+                                            ? aaRSizeObj.elementAttr
+                                            : (
+                                                aaRSizeObj.attr[0] == 'height' || aaRSizeObj.attr[0] == 'width'
                                                 ? 'offset' + $aa.ucfirst(aaRSizeObj.attr[0])
                                                 : aaRSizeObj.attr[0]
-                                          );
+                                                );
 
                     aaRSizeObj.offset = aaRSizeObj.offset ? aaRSizeObj.offset : 0;
                     //aaRSizeObj._mediaQuery = aaRSizeObj.mediaQuery;
