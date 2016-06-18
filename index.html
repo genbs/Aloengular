@@ -9,13 +9,13 @@
         body{
             margin:0;
         }
+        .b1{ background:green; }
+        .b2{ background:red; }
     </style>
 </head>
 <body ng-controller="MainCtrl">
 
-    <div style="background:green" aa-r-size="[{ attr: 'height', element:'body', size: 50}, { attr:'width', size: 80 }, { attr: 'lineHeight', element:'body', elementAttr:'offsetHeight' }]">asd 22222</div>
-    <div style="background:red" aa-r-size="[{ attr: 'width', element: 'body', size: 50 }, { attr: 'height', element:'body', size: 20 }]">ljklk 2222</div>
-    <div style="background:blue; width: 100%; height: 100%; text-align:center" class="lineHeight-window-innerHeight-100">ciao 222</div>
+    <div class="b1" aa-r-size="[{ attr: ['height', 'lineHeight'], element:'body', size: 50}, { attr:'padding', element:'body', elementAttr:'offsetHeight', size: 5 }]">asd 22222</div>
 
 
     <script src="components/aaUtils/aaUtils.js"></script>
@@ -34,7 +34,7 @@
 
             //$aaRSize.add([{ elementName: 'window', element: window, elementAttr:'innerHeight', attr:'lineHeight', size: 100 }]);
 
-            window.onresize = setFont;
+            window.addEventListener('resize', setFont);
 
             setFont();
 

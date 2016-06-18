@@ -19,15 +19,17 @@
 
     function aaResponsiveSizeFactory($aa)
     {
-        var c = {}, sizes = [];
+        var c = {}, sizes = [], raf;
 
         c.add = add;
 
+        raf = window.requestAnimationFrame || window.mozRequestAnimationFrame || window.webkitRequestAnimationFrame || window.msRequestAnimationFrame;
+
         window.addEventListener('resize', function(){
-            requestAnimationFrame(update);
+            raf(update);
         });
 
-        requestAnimationFrame(update);
+        raf(update);
 
         return c;
 
@@ -51,10 +53,10 @@
 
         function update()
         {
-            var styles = [];
-
-            sizes.map(function(t){
-                t.target[0].style[t.attr] = getValueFromObj(t);
+            sizes.map(function(aaRSize){
+                aaRSize.attr.map(function(attr){
+                    aaRSize.target.style[attr] = getValueFromObj(aaRSize);
+                });
             });
         }
 
@@ -139,28 +141,20 @@
 
                 function aaRSizeSanitizeObj(aaRSizeObj)
                 {
-                    aaRSizeObj.target = $element;
+                    aaRSizeObj.target = $element[0];
 
-                    aaRSizeObj.elementName = typeof aaRSizeObj.element === 'string' ? aaRSizeObj.element : '';
+                    aaRSizeObj.attr = typeof aaRSizeObj.attr === 'string' ? [aaRSizeObj.attr] : aaRSizeObj.attr;
 
                     aaRSizeObj.element = typeof aaRSizeObj.element === 'string'
                                         ? $aa.getObj(aaRSizeObj.element, $element[0])
                                         : aaRSizeObj.element ? aaRSizeObj.element : $element[0].parentNode;
 
-                    if(aaRSizeObj.elementName === '')
-                    {
-                        if(aaRSizeObj.element == document.body)
-                            aaRSizeObj.elementName = 'body';
-                        else if(aaRSizeObj.element == document.window)
-                            aaRSizeObj.elementName = 'window';
-                    }
-
                     aaRSizeObj.elementAttr = aaRSizeObj.elementAttr
                                         ? aaRSizeObj.elementAttr
                                         : (
-                                            aaRSizeObj.attr == 'height' || aaRSizeObj.attr == 'width'
-                                                ? 'offset' + $aa.ucfirst(aaRSizeObj.attr)
-                                                : aaRSizeObj.attr
+                                            aaRSizeObj.attr[0] == 'height' || aaRSizeObj.attr[0] == 'width'
+                                                ? 'offset' + $aa.ucfirst(aaRSizeObj.attr[0])
+                                                : aaRSizeObj.attr[0]
                                           );
 
                     aaRSizeObj.offset = aaRSizeObj.offset ? aaRSizeObj.offset : 0;
