@@ -3,8 +3,8 @@
 	'use strict';
 
 	angular
-		.module('aloengular.utils', [])
-		.factory('$aa', aaUtils)
+	.module('aloengular.utils', [])
+	.factory('$aa', aaUtils)
 	;
 
 	///////////////////////////
@@ -102,25 +102,25 @@
 			element = this.toElement(element);
 
 		if(name === 'parent' && element)
-             return element.parentNode;
-        if(name === 'body')
-            return document.body;
+			return element.parentNode;
+		if(name === 'body')
+			return document.body;
 
-        if(name.indexOf('parent:') === 0 && element)
-        {
-            var p = name.split(':');
+		if(name.indexOf('parent:') === 0 && element)
+		{
+			var p = name.split(':');
 
-            p[0] = element; p[1] = Number(p[1]);
+			p[0] = element; p[1] = Number(p[1]);
 
-            do{
-                p[0] = p[0].parentNode;
-                p[1]--;
-            } while(p[1] != 0);
+			do{
+				p[0] = p[0].parentNode;
+				p[1]--;
+			} while(p[1] != 0);
 
-            return p[0];
-        }
+			return p[0];
+		}
 
-        return window;
+		return window;
 	}
 
 	///////////////////////////
@@ -148,13 +148,13 @@
 
 	function ucfirst(string)
 	{
-        return string.charAt(0).toUpperCase() + string.slice(1);
-    }
+		return string.charAt(0).toUpperCase() + string.slice(1);
+	}
 
-    function str_random(length)
-    {
-    	return Math.random().toString(36).substr(2, (length || 5) + 2);
-    }
+	function str_random(length)
+	{
+		return Math.random().toString(36).substr(2, (length || 5) + 2);
+	}
 
     //////////////////////////////
 
