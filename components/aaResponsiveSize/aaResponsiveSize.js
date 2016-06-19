@@ -1,5 +1,11 @@
 /**
  * Aloengular Responsive Size
+ * created at: 2016-01-20
+ * author: Gennaro Bosone <gennaro.bs@gmail.com>
+ *
+ * version: 0.0.0
+ * update at: 2016-06-19
+ *
  * @required [aloengular.utils]
  * sizes object = [
  *     { attr: string, element: object (optional), elementAttr: string (optional), size: number (optional, percentage), offset: (optiona, number), mediaQuery: string(aaMediaQuery)(optional) }
@@ -37,13 +43,6 @@
             return sizes.map(function(s){ return s.element[s.elementAttr]; });
         }
 
-        //////////////////////////////
-
-        function add(aaRSizeArray)
-        {
-            sizes = sizes.concat(aaRSizeArray);
-        }
-
         function getValueFromObj(aaRSizeObj)
         {
             var x = aaRSizeObj.element[aaRSizeObj.elementAttr]
@@ -53,17 +52,22 @@
             return (x * aaRSizeObj.size / 100) + (aaRSizeObj.offset || 0) + 'px';
         }
 
-        //////////////////////////////
-
-        function update()
+        function applyStyles()
         {
-            raf(function(){
-                sizes.map(function(aaRSize){
-                    aaRSize.attr.map(function(attr){
-                        aaRSize.target.style[attr] = getValueFromObj(aaRSize);
-                    });
+            sizes.map(function(aaRSize){
+                aaRSize.attr.map(function(attr){
+                    aaRSize.target.style[attr] = getValueFromObj(aaRSize);
                 });
             });
+        }
+
+        function update(){ raf(applyStyles); }
+
+        //////////////////////////////
+
+        function add(aaRSizeArray)
+        {
+            sizes = sizes.concat(aaRSizeArray);
         }
 
     }
