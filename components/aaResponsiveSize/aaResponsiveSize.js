@@ -17,19 +17,25 @@
 
     //////////////////////////////
 
-    function aaResponsiveSizeFactory($aa)
+    function aaResponsiveSizeFactory($aa, $rootScope)
     {
-        var c = {}, sizes = [], raf;
+        var c = {}, sizes = [], raf, o = null;
 
         c.add = add;
 
         raf = window.requestAnimationFrame || window.mozRequestAnimationFrame || window.webkitRequestAnimationFrame || window.msRequestAnimationFrame;
 
         window.addEventListener('resize', update);
-
-        update();
+        $rootScope.$watchCollection(watchCollection, update, true);
 
         return c;
+
+        //////////////////////////////
+
+        function watchCollection()
+        {
+            return sizes.map(function(s){ return s.element[s.elementAttr]; });
+        }
 
         //////////////////////////////
 
@@ -61,7 +67,7 @@
         }
 
     }
-    aaResponsiveSizeFactory.$inject = ['$aa'];
+    aaResponsiveSizeFactory.$inject = ['$aa', '$rootScope'];
 
 
 
