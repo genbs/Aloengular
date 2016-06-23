@@ -90,6 +90,9 @@
 				}
 			}while(el = el.offsetParent);
 
+			offset.width = e.offsetWidth;
+			offset.height = e.offsetHeight;
+
 			return offset;
 		});
 	}
@@ -148,7 +151,7 @@
 
 	function ucfirst(string)
 	{
-		return string.charAt(0).toUpperCase() + string.slice(1);
+		return string.charAt(0).toUpperCase() + string.slice(1).toLowerCase();
 	}
 
 	function str_random(length)

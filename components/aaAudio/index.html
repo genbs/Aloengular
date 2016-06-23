@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="app">
+<head>
+    <meta charset="UTF-8">
+    <title>Document</title>
+    <style>
+        html, body{ height: 100%; margin: 0; }
+        body{ opacity : 0; }
+        .asd{
+            display: block;
+            width: 100%; height: 200px;
+        }
+    </style>
+</head>
+<body ng-controller="AppCtrl">
+        <select ng-model="mysource" ng-change="changeSource(mysource)">
+            <option value="Audio/audio.mp3">audio.mp3</option>
+            <option value="Audio/raggie.mp3">raggie.mp3</option>
+            <option value="Audio/A.mp3">A.mp3</option>
+            <option value="Audio/sinf1.mp3">sinf1.mp3</option>
+            <option value="Audio/cello.mp3">cello.mp3</option>
+            <option value="Audio/violin.mp3">violin.mp3</option>
+        </select>
+
+        <div>
+            <aa-audio
+                source="source"
+                state="state"
+                fft-size="fftSize"
+                min-decibels="minDecibels"
+                max-decibels="maxDecibels"
+                smoothing="smoothing"
+                onprogress="prog"
+                playback-rate="playbackRate"
+                volume="volume"
+                audio="a"
+            ></aa-audio>
+            <!--
+            <aa-audio-preview class="asd"
+                audio="a"
+                draw-fill="fill" draw-color="color" draw-played-color="playedColor"
+            ></aa-audio-preview>
+            -->
+            <aa-audio-draw class="asd" audio="a" draw-type="dtype" draw-fill="fill" draw-color="color"></aa-audio-draw>
+            <div style="clear: both;">
+                <button ng-click="state='running'" ng-show="state=='suspended'">Play</button>
+                <button ng-click="state='suspend'" ng-show="state=='running'">Stop</button>
+                STATO {{ state }}
+
+                <input type="range" ng-model="volume" min="0" max="100">
+
+                VOLUME {{ volume }}
+                <button ng-click="mute()" ng-show="volume>0">mute</button>
+                <button ng-click="unmute()" ng-show="volume==0">unmute</button>
+
+                TIPO: {{ dtype }}
+                <button ng-click="dtype = 'Rect'">Rect</button>
+                <button ng-click="dtype = 'Line'">Line</button>
+                <button ng-click="dtype = 'Wave'">Wave</button>
+
+                Fill: {{ fill }} <input type="color" ng-model="fill">
+                Color: {{ color }} <input type="color" ng-model="color">
+                PlayedColor: {{ playedColor }} <input type="color" ng-model="playedColor">
+
+            </div>
+            <div>
+                playbackRate {{playbackRate}}
+                <input type="range" ng-model="playbackRate" min="0.1" max="3" step="0.1">
+            </div>
+            <div>
+
+                fftSize {{ fftSize }}
+
+                minD {{ minDecibels }}
+                maxD {{ maxDecibels }}
+
+                smot {{ smoothing }}
+
+            </div>
+        </div>
+        <div>
+            loading {{ perc | number:2 }}%
+        </div>
+
+
+
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.9/angular.min.js"></script>
+    <script src="../aaUtils/aaUtils.js"></script>
+    <script src="aaAudio.js"></script>
+    <script src="aaAudioDraw.js"></script>
+    <script src="aaAudioPreview.js"></script>
+
+    <script>
+        angular
+            .module('app', ['aloengular.utils','aloengular.audio'])
+            .controller('AppCtrl', AppCtrl);
+
+        function AppCtrl($scope, $timeout){
+            $scope.dtype = 'rect'; $scope.fill = '#ffffff'; $scope.color = '#ebebeb'; $scope.playedColor = '#73fcd6';
+            $scope.source = null;
+            $scope.perc = 0;
+            $scope.fftSize = 2048;/*8192;*/ /*$scope.minDecibels = -120;*/ $scope.maxDecibels = -30; $scope.smoothing = 0.85;
+            $scope.volume = $scope.oldVolume = 10;
+            $scope.playbackRate = 1;
+
+            $scope.pow = function(i){
+                return Math.pow(2, i);
+            }
+            $scope.changeSource = function(s){
+                $scope.perc = 0;
+                $scope.state = null;
+                $scope.source = s;
+            }
+
+            $scope.prog = function(perc){ $scope.perc = perc; }
+            $scope.mute = function(){ $scope.oldVolume = $scope.volume; $scope.volume = 0; }
+            $scope.unmute = function(){ $scope.volume = $scope.oldVolume; }
+
+            $scope.state = $scope.changeSource('Audio/audio.mp3');
+            document.body.style.opacity = 1;
+
+        }
+        AppCtrl.$inject = ['$scope','$timeout'];
+
+
+    </script>
+</body>
+</html>
