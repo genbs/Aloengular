@@ -32,7 +32,8 @@
         raf = window.requestAnimationFrame || window.mozRequestAnimationFrame || window.webkitRequestAnimationFrame || window.msRequestAnimationFrame;
 
         window.addEventListener('resize', update);
-        $rootScope.$watchCollection(watchCollection, update, true);
+        $rootScope.$watchCollection(watchCollection, update);
+        $rootScope.$on('$aaRSize:update', update);
 
         return c;
 
@@ -49,7 +50,7 @@
                     ? aaRSizeObj.element[aaRSizeObj.elementAttr]
                     : aaRSizeObj.element.style[aaRSizeObj.elementAttr];
 
-            return (x * aaRSizeObj.size / 100) + (aaRSizeObj.offset || 0) + 'px';
+            return ((x * aaRSizeObj.size) / 100) + (aaRSizeObj.offset || 0) + 'px';
         }
 
         function applyStyles()
@@ -166,7 +167,6 @@
                                                 ? 'offset' + $aa.ucfirst(aaRSizeObj.attr[0])
                                                 : aaRSizeObj.attr[0]
                                                 );
-
                     aaRSizeObj.offset = aaRSizeObj.offset ? aaRSizeObj.offset : 0;
                     //aaRSizeObj._mediaQuery = aaRSizeObj.mediaQuery;
                     //aaRSizeObj.mediaQuery = aaRSizeObj.mediaQuery ? $aaMediaQuery[aaRSizeObj.mediaQuery] : function(){ return true };

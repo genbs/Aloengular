@@ -104,10 +104,10 @@
 		if(typeof element !== 'undefined')
 			element = this.toElement(element);
 
-		if(name === 'parent' && element)
-			return element.parentNode;
 		if(name === 'body')
 			return document.body;
+		if(name === 'parent' && element)
+			return element.parentNode;
 
 		if(name.indexOf('parent:') === 0 && element)
 		{
